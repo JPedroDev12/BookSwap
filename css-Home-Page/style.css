@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #EEEEEE;
+}
+
+.main-header {
+    background: linear-gradient(to right, #00e5ff, #3d5afe, #154360);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.logo img {
+    max-width: 100px;
+    max-height: auto;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to );
+}
+
+.logo span {
+    font-size: 25px;
+    font-weight: bold;
+    background: linear-gradient(-50deg, #8e24aa, #ff5678, #ff1744);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.navbar {
+    display: flex; 
+    gap: 120px;
+    list-style: none;
+}
+
+.navbar li {
+    font-size: 20px;
+    color: #ecebe9;
+}
+
+.navbar a {
+    color: #ecebe9;
+    text-decoration: none;
+}
+
+
+.login a{
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(to bottom, #00e5ff, #2fa3bb, #3f84af);
+    padding: 10px 25px;
+    border: white, solid, 2px;
+    border-radius: 15px;
+}
+
+.book-description {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 55px;
+    margin-left: 2vw;
+    margin-bottom: 5vw;
+}
+
+.book-img {
+    box-shadow: -22px 18px 24.3px 0px rgba(0, 0, 0, 0.244);
+    max-width: 32rem;
+    height: auto;
+    background-color: #e0e0e0;
+    padding: 20px;
+    position: relative;
+    border-radius: 15px;
+}
+
+.stamp-div img {
+    max-width: 130px;
+    height: auto;
+    position: absolute;
+    top: 560px;
+    right: 450px;
+}
+
+
+.mini-text {
+    border: solid, 2px #4693da;
+    padding: 10px;
+    border-radius: 28px;
+    color: #5b8ad2;
+}
+
+.text-color {
+    background: linear-gradient(to right, #00e5ff, #2fa3bb, #3f84af);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.right-text {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    gap: 5vw
+}
+
+.trade-button {
+    background: #2a6183;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.shop-button {
+    background-color: #98b8ff;
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.text-description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2vw;
+}
+
+.text-description span {
+    font-size: 25px;
+}
+
+.cards {
+    margin: 5vw;
+    display: flex;
+    justify-content: space-around;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: solid, 1px, rgba(0, 0, 0, 0.42);
+    border-radius: 16px;
+    padding: 15px;
+    width: 15vw;
+}
+
+.icon {
+    background: linear-gradient(to bottom, #0097a7, #2836c0, #0d2c3d);
+    width: 40px;
+    height: 40px;
+    padding-top: 5px;
+    border-radius: 5px;
+    text-align: center;
+
+}
+
+.card i {
+    padding: vw;
+    color: white;
+    font-size: 2vw;    
+}
+
+
+.footer-main {
+    background: linear-gradient(to right, #0097a7, #2836c0, #0d2c3d);
+    padding-top: 3vw;
+}
+
+.footer-flex {
+    display: flex;
+    justify-content: space-around;
+}
+
+.footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2vw;
+    color: white;
+}
+
+.text-left-footer h3 {
+    text-decoration: underline;
+}
+
+.text-left-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.email-input {
+    padding: 15px;
+    border-radius: 15px;
+    border: 2px, solid rgb(178, 178, 178);
+}
+
+.button-input {
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 15px;
+    background-color: #5b8ad2;
+    color: white;
+    border: #083987, solid, 2px;
+}
+
+.footer-mid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-mid h3{
+    color: white;
+    text-decoration: underline;
+}
+
+.footer-mid ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.footer-mid a {
+    text-decoration: none;
+    color: white;
+}
+
+.footer-right {
+    display: flex;
+    color: white;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-right h3 {
+    text-decoration: underline;
+    color: white;
+}
+
+.footer-right ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.footer-right a {
+    text-decoration: none;
+    color: white;
+}
+
+.bar-footer  {
+    
+    background: black;
+    margin: 25px 5rem;
+    border-radius: 10px;
+    height: 5px;
+    opacity: 23%;
+}
+
+.social-media {
+    display: flex;
+    gap: 2vw;
+    font-size: 30px;
+    color: white;
+    padding: 15px 10px 30px 10px;
+    justify-content: center;
+}
+
+.footer-botton {
+    display: flex;
+    justify-content: space-around;
+    background-color: rgba(10, 10, 10, 0.25);
+    padding: 25px;
+    color: white;
+}
+
+.footer-botton a {
+    color: white;
+}
