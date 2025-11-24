@@ -1,6 +1,6 @@
-# 📚 SwapBook
+# 📚 BookSwap
 
-O **SwapBook** é uma plataforma interativa onde os amantes da leitura podem **trocar livros** de forma divertida e prática — inspirada no estilo do **Tinder**, com o sistema de *Swapping* (deslize para trocar).  
+O **BookSwap** é uma plataforma interativa onde os amantes da leitura podem **trocar livros** de forma divertida e prática — inspirada no estilo do **Tinder**, com o sistema de *Swapping* (deslize para trocar).  
 Além disso, o site conta com uma **loja de livros**, um **chat integrado** e um **sistema Plus** com recursos exclusivos!
 
 ---
@@ -26,7 +26,7 @@ Além disso, o site conta com uma **loja de livros**, um **chat integrado** e um
 
 ## 🌟 Sistema Plus (Recursos Premium)
 
-Com o **SwapBook Plus**, os usuários ganham acesso a novos recursos e mais visibilidade dentro da plataforma:
+Com o **BookSwap Plus**, os usuários ganham acesso a novos recursos e mais visibilidade dentro da plataforma:
 
 - 🎨 **Novo Tema** — personalize a aparência do site com um tema exclusivo.  
 - 📈 **Mais Destaque** — seu perfil aparece com mais frequência na seção de *Swapping*.  
@@ -43,6 +43,3 @@ Com o **SwapBook Plus**, os usuários ganham acesso a novos recursos e mais visi
 - **Outros:** JSON para armazenamento temporário e integração
 
 ---
-
-## 🧩 Estrutura do Projeto
-
