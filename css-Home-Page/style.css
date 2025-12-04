@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+:root {
+    --blue-gradient: linear-gradient(to right, #00e5ff, #3d5afe, #154360);
+}
+
 * {
     padding: 0px;
     margin: 0px;
@@ -12,7 +16,7 @@ body {
 }
 
 .main-header {
-    background: linear-gradient(to right, #00e5ff, #3d5afe, #154360);
+    background: var(--blue-gradient);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -26,7 +30,6 @@ body {
 .logo {
     display: flex;
     align-items: center;
-    background: linear-gradient(to );
 }
 
 .logo span {
@@ -46,13 +49,25 @@ body {
 .navbar li {
     font-size: 20px;
     color: #ecebe9;
+    transition: 0.3s;
+    padding: 12px;
+    border-radius: 15px;
 }
 
 .navbar a {
     color: #ecebe9;
+    transition: 0.3s;
     text-decoration: none;
 }
 
+.navbar li:hover {
+    background-color: rgba(0, 0, 0, 0.264);
+    transform: scale(1.1);
+}
+
+.navbar a:hover {
+    font-weight: bold;
+}
 
 .login a{
     color: white;
@@ -99,7 +114,7 @@ body {
 }
 
 .text-color {
-    background: linear-gradient(to right, #00e5ff, #2fa3bb, #3f84af);
+    background: var(--blue-gradient);
     -webkit-background-clip: text;
     color: transparent;
 }
@@ -178,7 +193,7 @@ body {
 
 
 .footer-main {
-    background: linear-gradient(to right, #0097a7, #2836c0, #0d2c3d);
+    background: var(--blue-gradient);
     padding-top: 3vw;
 }
 

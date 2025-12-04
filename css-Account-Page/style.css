@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+:root {
+    --gradient-plus: linear-gradient(to right, #8e2daa, #ff5678, #f17108);
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #EEEEEE;
+}
+
+.hidden {
+    display: none;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.layout-login {
+    margin: 5vw;
+    border-radius: 2rem;
+    padding: 0rem 10rem 2rem;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    align-items: center;
+    background: linear-gradient(30deg, #3c789e, #70BCEB);
+    border: solid 4px #4966AE;
+}
+
+.logo img {
+    max-width: 120px;
+    height: auto;
+}
+
+.logo span {
+    background: var(--gradient-plus);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
+    font-size: 2vw;
+}
+
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 2vw;
+}
+
+.tabs {
+    background-color: #1d5477;
+    padding: 0.1vw;
+    border-radius: 10px;
+    margin: 0px 0px 1.2rem;
+    position: relative;
+    display: flex;
+}
+
+.tabs button {
+    border-radius: 10px;
+    background-color: transparent;
+    padding: 1vw 2.2vw;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.tab-indicator {
+    position: absolute;
+    background-color: #86a7e5;
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+    height: calc(100% - 0.2vw);
+    top: 0.1vw;
+}
+
+.login-flex,
+.register-flex {
+    display: flex;
+    flex-direction: column;
+    gap: 2vw;
+}
+
+.email-flex,
+.password-flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-flex input,
+.register-flex input {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+.submit {
+    width: 115px;
+    padding: 8px 0;
+    font-size: 14px;
+    margin-top: 10px;
+    align-self: center;
+    background-color: #2caeff;
+    color: white;
+    font-weight: bold;
+    border: solid 2px #70BCEB;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit:hover {
+    background-color: #1d8dd8;
+}
+
+label {
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+}

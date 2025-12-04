@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css-Account-Page/style.css">
+    <link rel="stylesheet" href="/css-Account-Page/dark-mode.css">
+    <link rel="stylesheet" href="/css-Account-Page/plus-mode.css">
+    <link rel="stylesheet" href="/css-Account-Page/responsive.css">
+    <link rel="shortcut icon" href="img/double-color-logo.png" type="image/x-icon">
+    <title>Logar/Criar  Conta</title>
+</head>
+<body>
+    <div class="container">
+        <div class="layout-login">
+            <div class="logo">
+                <img src="img/double-color-logo.png" alt="logo-img">
+                <span>BookSwap</span>
+            </div>
+            <div class="tabs">
+                <div class="tab-indicator"></div>
+                <button class="tab active" id="btn-login">Logar</button>
+                <button class="tab" id="btn-register">Registrar-Se</button>
+            </div>
+                <form class="form-area" id="form-login">
+                    <div class="login-flex">
+                        <div class="email-flex">
+                            <label>Email</label>
+                            <input type="email" placeholder="seu@email.com" required>
+                        </div>
+                        <div class="password-flex">
+                            <label>Senha</label>
+                            <input type="password" placeholder="••••••••" required>
+                        </div>
+                        <button class="submit">Entrar</button>
+                    </div>
+                </form>
+                <form id="form-register" class="form-area hidden">
+                    <div class="register-flex">
+                        <div class="email-flex">
+                            <label>Email</label>
+                            <input type="email" placeholder="seu@email.com" required>
+                        </div>
+                        <div class="password-flex">
+                            <label>Senha</label>
+                            <input type="password" placeholder="••••••••" required>
+                        </div>
+                        <div class="password-flex">
+                            <label>Confirmar Senha</label>
+                            <input type="password" placeholder="••••••••" required>
+                        </div>
+                        <button class="submit">Criar Conta</button>
+                    </div>
+                </form>
+            </div>
+    </div>
+    <script src="/js/login-layout.js"></script>
+</body>
+</html>
