@@ -121,9 +121,3 @@ Projeto desenvolvido por:
 O **BookSwap** foi criado com o objetivo de incentivar a **troca de livros entre leitores**, facilitando conexões entre pessoas com interesses literários em comum.
 
 A plataforma busca tornar o processo de troca **simples, interativo e social**.
-
----
-
-# 📄 Licença
-
-Este projeto foi desenvolvido para **fins educacionais**.
