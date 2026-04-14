@@ -113,6 +113,9 @@ Projeto desenvolvido por:
 
 * **Inácio Lopes**
 * **João Pedro Martins**
+* **Rafael Knapp**
+* **Kaiqui Fernandes**
+* **Fernando Gabriel**
 
 ---
 
