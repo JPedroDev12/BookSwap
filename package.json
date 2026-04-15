@@ -18,5 +18,14 @@
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^25.6.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JPedroDev12/BookSwap.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/JPedroDev12/BookSwap/issues"
+  },
+  "homepage": "https://github.com/JPedroDev12/BookSwap#readme"
 }

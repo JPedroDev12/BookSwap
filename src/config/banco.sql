@@ -55,7 +55,7 @@ CREATE TABLE swapping (
     swapping_id INT NOT NULL,
     book_id INT NOT NULL,
     action ENUM ('like', 'dislike', 'skip') NOT NULL,
-    UNIQUE KEY uq_swapping (swapping_id, book_id),
+    UNIQUE KEY uq_swapping (swapping_id, book_id), -- faz o usuario reagir apenas uma vez nesse livro
     FOREIGN KEY (swapping_id) REFERENCES user(id) ON DELETE CASCADE,
     FOREIGN KEY (book_id) REFERENCES book(id) ON DELETE CASCADE
 );
