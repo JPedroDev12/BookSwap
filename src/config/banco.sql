@@ -8,7 +8,7 @@ CREATE TABLE user (
     email VARCHAR (100) NOT NULL UNIQUE,
     CPF CHAR (11) UNIQUE,
     password VARCHAR (50) NOT NULL,
-    theme_status ENUM ('Modo claro', 'Modo escuro') DEFAULT 'Modo claro' NOT NULL,
+    theme_status ENUM ('Modo claro', 'Modo escuro') DEFAULT 'Modo claro',
     created_at TIMESTAMP DEFAULT current_timestamp
 );
 
@@ -55,7 +55,7 @@ CREATE TABLE swapping (
     swapping_id INT NOT NULL,
     book_id INT NOT NULL,
     action ENUM ('like', 'dislike', 'skip') NOT NULL,
-    UNIQUE KEY uq_swapping (swapping_id, book_id), -- faz o usuario reagir apenas uma vez nesse livro
+    UNIQUE KEY uq_swapping (swapping_id, book_id), -- faz o usuario reagir apenas uma vez nesse livro ou seja, ou ele da like, dislike ou skip.
     FOREIGN KEY (swapping_id) REFERENCES user(id) ON DELETE CASCADE,
     FOREIGN KEY (book_id) REFERENCES book(id) ON DELETE CASCADE
 );
