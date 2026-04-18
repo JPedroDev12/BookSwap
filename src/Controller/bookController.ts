@@ -24,7 +24,7 @@ export async function CreateBook(res:Response, req:Request) {
     const body:CreateBookDTO = req.body;
     const book = await db<Book>("book").insert(body)
 
-    return res.status(200).json({
+    return res.status(201).json({
         Success: "Livro Criado com Sucesso", data: book
     })
 }
@@ -42,7 +42,7 @@ export async function UpdateBook(res:Response, req:Request) {
     }
 
     await db<Book>("book").where({ id }).update(body)
-    return res.status(200).json({
+    return res.status(201).json({
             Success: "Livro Atualizado com Sucesso", data: book
     })
 }

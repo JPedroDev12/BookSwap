@@ -16,6 +16,7 @@ CREATE TABLE user_page (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     description TEXT,
+    phoyo_url VARCHAR(300),
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
@@ -53,11 +54,11 @@ CREATE TABLE book_trade (
 CREATE TABLE swapping (
     id INT AUTO_INCREMENT PRIMARY KEY,
     swapping_id INT NOT NULL,
-    book_id INT NOT NULL,
+    book_trade_id INT NOT NULL,
     action ENUM ('like', 'dislike', 'skip') NOT NULL,
     UNIQUE KEY uq_swapping (swapping_id, book_id), -- faz o usuario reagir apenas uma vez nesse livro ou seja, ou ele da like, dislike ou skip.
     FOREIGN KEY (swapping_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (book_id) REFERENCES book(id) ON DELETE CASCADE
+    FOREIGN KEY (book_id) REFERENCES book_trade(id) ON DELETE CASCADE
 );
 
 CREATE TABLE likes (

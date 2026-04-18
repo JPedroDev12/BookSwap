@@ -1,4 +1,4 @@
 import { UserPage } from "../Interface/userPage.Interface";
 
-export type CreateUserPageDTO = Pick<UserPage, `description` | `user_id`>
-export type UpdateUserPageDTO = Partial<CreateUserPageDTO>
+export type CreateUserPageDTO = Pick<UserPage, 'user_id' | 'description' | 'photo_url'>
+export type UpdateUserPageDTO = Partial<Pick<UserPage, 'description' | 'photo_url'>>

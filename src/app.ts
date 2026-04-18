@@ -1,12 +1,22 @@
 import express from "express";
-//importar rotas dps
+import http from "http";
+import { Server } from "socket.io";
+import { initSocket } from "./socket";
+import chatRoutes from "./Routes/chatRoutes";
+import messageRoutes from "./Routes/messageRoutes";
+// ... outras rotas
 
 const app = express();
-const port = 3000;
+const server = http.createServer(app);
+const io = new Server(server);
 
-app.use(express.json())
-app.use('/', ) //importar rotas
+app.use(express.json());
+app.use("/chats", chatRoutes);
+app.use("/messages", messageRoutes);
+// ... outras rotas
 
-app.listen(port, () => {
+initSocket(io); // inicializa o socket
+
+server.listen(3000, () => {
     console.log("Servidor aberto porta 3000");
-})
+});

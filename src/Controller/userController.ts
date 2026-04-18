@@ -25,7 +25,7 @@ export async function CreateUser(res: Response, req: Request) {
     const body:CreateUserDTO = req.body;
     const user = await db<User>("user").insert(body)
 
-    return res.status(200).json({
+    return res.status(201).json({
         Success: "Usuário Criado com Sucesso", data: user
     })
 }
@@ -43,7 +43,7 @@ export async function UpdateUser(res:Response, req:Request) {
     }
 
     await db<User>("user").where({ id }).update(body)
-    return res.status(200).json({
+    return res.status(201).json({
         Success: "Usuário Atualizado com Sucesso", data:user
     })
 }
