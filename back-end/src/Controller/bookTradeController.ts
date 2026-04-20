@@ -3,7 +3,7 @@ import { db } from "../config/knex"
 import { BookTrade } from "../Interface/bookTrade.Interface"
 import { CreateBookTradeDTO, UpdateBookTradeDTO } from "../Dto/bookTrade.dto"
 
-export async function GetTrades(res:Response, req:Request) {
+export async function GetTrades(req: Request, res: Response) {
     const trades = await db<BookTrade>("book_trade")
         .join("book", "book_trade.book_id", "book.id")
         .join("user", "book_trade.user_id", "user.id")

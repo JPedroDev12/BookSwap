@@ -3,24 +3,31 @@ import { db } from "../config/knex";
 import { Chat } from "../Interface/chat.Interface";
 import { CreateChatDTO, UpdateChatDTO } from "../Dto/chat.dto";
 
-export async function GetChats(res: Response, req: Request) {
+export async function GetChats(req: Request, res: Response) {
     const user_id = +req.params.user_id
+
+    if (!user_id) {
+        return res.status(404).json({
+            Error: "Usuário não Encontrado"
+        })
+    }
+
     const chats = await db<Chat>("chat")
         .where("user1_id", user_id)
         .orWhere("user2_id", user_id)
-        .join("user as u1", "chat,user1_id", "u1.id")
-        .join("user as u2", "chat.user2_id", "i2.id")
+        .join("user as u1", "chat.user1_id", "u1.id")
+        .join("user as u2", "chat.user2_id", "u2.id")
         .select(
             "chat.id",
             "u1.username as user1",
-            "u2username as user2",
+            "u2.username as user2",
             "chat.created_at"
         )
 
     return res.status(200).json({ chats })
 }
 
-export async function CreateChat(res: Response, req: Request) {
+export async function CreateChat(req: Request, res: Response) {
     const body:CreateChatDTO = req.body
 
     // verifica se o chat entre esses dois usuarios ja existe

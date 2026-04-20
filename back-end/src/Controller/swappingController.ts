@@ -3,13 +3,13 @@ import { db } from "../config/knex";
 import { Swapping } from "../Interface/swapping.Interface";
 import { CreateSwappingDTO, UpdateSwappingDTO } from "../Dto/swapping.dto";
 
-export async function GetSwapping(res: Response, req: Request) {
+export async function GetSwapping(req: Request, res: Response) {
     const swapping_id = +req.params.swapping_id
     const swappings = await db<Swapping>("swapping").where({ swapping_id }).select("*")
     return res.status(200).json({ swappings })
 }
 
-export async function ReactToBook(res: Response, req: Request) {
+export async function ReactToBook(req: Request, res: Response) {
     const body:CreateSwappingDTO = req.body;
     await db<Swapping>("swapping").insert(body)
 

@@ -3,12 +3,12 @@ import { db } from "../config/knex"
 import { User } from "../Interface/user.Interface"
 import { CreateUserDTO, UpdateUserDTO } from "../Dto/user.dto"
 
-export async function GetUsers(res:Response, req:Request) {
+export async function GetUsers(req: Request, res: Response) {
     const users = await db<User>("user").select("*")
     return res.status(200).json({users})
 }
 
-export async function GetUserById(res:Response, req:Request) {
+export async function GetUserById(req: Request, res: Response) {
     const id = +req.params.id
     const user = await db<User>("user").where({ id }).first()
 
@@ -21,7 +21,7 @@ export async function GetUserById(res:Response, req:Request) {
     return res.status(200).json({ data: user })
 }
 
-export async function CreateUser(res: Response, req: Request) {
+export async function CreateUser(req: Request, res: Response) {
     const body:CreateUserDTO = req.body;
     const user = await db<User>("user").insert(body)
 
@@ -30,7 +30,7 @@ export async function CreateUser(res: Response, req: Request) {
     })
 }
 
-export async function UpdateUser(res:Response, req:Request) {
+export async function UpdateUser(req: Request, res:Response) {
     const id = +req.params.id
     const body:UpdateUserDTO = req.body
 
@@ -48,7 +48,7 @@ export async function UpdateUser(res:Response, req:Request) {
     })
 }
 
-export async function DeleteUser(res: Response, req: Request) {
+export async function DeleteUser(req:Request, res:Response) {
     const id = +req.params.id
     const user = await db<User>("user").where({ id }).first()
 

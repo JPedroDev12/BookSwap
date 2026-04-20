@@ -34,19 +34,6 @@ export async function getUserPage(req: Request, res: Response) {
     return res.status(200).json({ data: { ...page, favoriteBooks } });
 }
 
-export async function GetUserPageById(res:Response, req:Request) {
-    const id = +req.params.id
-    const UserPage = await db<UserPage>("user_page").where({id}).first()
-
-    if (!UserPage) {
-        return res.status(404).json({
-            Error: "Usuário não Encontrado"
-        })
-    }
-
-    return res.status(200).json({ data: UserPage })
-}
-
 export async function createUserPage(req: Request, res: Response) {
     const body: CreateUserPageDTO = req.body;
     await db<UserPage>("user_page").insert(body);

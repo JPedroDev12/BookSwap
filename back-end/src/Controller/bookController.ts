@@ -3,12 +3,12 @@ import { db } from "../config/knex"
 import { Book } from "../Interface/book.Interface"
 import { CreateBookDTO, UpdateBookDTO } from "../Dto/book.dto"
 
-export async function GetBooks(res:Response, req: Request) {
+export async function GetBooks(req:Request, res:Response) {
     const books = await db<Book>("book").select("*")
     return res.status(200).json({books})
 }
 
-export async function GetBookById(res: Response, req: Request) {
+export async function GetBookById(req:Request, res:Response) {
     const id = +req.params.id
     const book = await db<Book>("book").where({ id }).first()
     if (!book) {
@@ -20,7 +20,7 @@ export async function GetBookById(res: Response, req: Request) {
     return res.status(200).json({data: book}) // data é usado para melhor organização na hora de criar o front-end
 }
 
-export async function CreateBook(res:Response, req:Request) {
+export async function CreateBook(req: Request, res:Response) {
     const body:CreateBookDTO = req.body;
     const book = await db<Book>("book").insert(body)
 
@@ -29,7 +29,7 @@ export async function CreateBook(res:Response, req:Request) {
     })
 }
 
-export async function UpdateBook(res:Response, req:Request) {
+export async function UpdateBook(req: Request, res:Response) {
     const id = +req.params.id
     const body:UpdateBookDTO = req.body
 
@@ -47,7 +47,7 @@ export async function UpdateBook(res:Response, req:Request) {
     })
 }
 
-export async function DeleteBook(res: Response, req: Request) {
+export async function DeleteBook(req:Request, res:Response) {
     const id = +req.params.id
     const book = await db<Book>("book").where({ id }).first()
 

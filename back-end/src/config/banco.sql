@@ -16,7 +16,7 @@ CREATE TABLE user_page (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     description TEXT,
-    phoyo_url VARCHAR(300),
+    photo_url VARCHAR(300),
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
@@ -29,7 +29,7 @@ CREATE TABLE book (
     cover_url VARCHAR (300),
     description TEXT,
     genre VARCHAR (100),
-    year_published YEAR,
+    year_published INT,
     created_at TIMESTAMP DEFAULT current_timestamp,
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
@@ -53,12 +53,12 @@ CREATE TABLE book_trade (
 
 CREATE TABLE swapping (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    swapping_id INT NOT NULL,
+    swapping_id INT NOT NULL, -- Usuario
     book_trade_id INT NOT NULL,
     action ENUM ('like', 'dislike', 'skip') NOT NULL,
-    UNIQUE KEY uq_swapping (swapping_id, book_id), -- faz o usuario reagir apenas uma vez nesse livro ou seja, ou ele da like, dislike ou skip.
+    UNIQUE KEY uq_swapping (swapping_id, book_trade_id), -- faz o usuario reagir apenas uma vez nesse livro ou seja, ou ele da like, dislike ou skip.
     FOREIGN KEY (swapping_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (book_id) REFERENCES book_trade(id) ON DELETE CASCADE
+    FOREIGN KEY (book_trade_id) REFERENCES book_trade(id) ON DELETE CASCADE
 );
 
 CREATE TABLE likes (
@@ -88,7 +88,7 @@ CREATE TABLE chat (
     FOREIGN KEY (user2_id) REFERENCES user(id)
 );
 
-CREATE TABLE message (
+CREATE TABLE messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     chat_id INT NOT NULL,
     author_id INT NOT NULL,
