@@ -3,7 +3,7 @@ import { useState } from "react";
 //import imgs/componentes
 import { CiHeart } from "react-icons/ci";
 import { FaArrowRight } from "react-icons/fa";
-import Header from "./components/Header";
+import Header from "../components/Header";
 import Livros from "./assets/img/livros.png"
 
 
