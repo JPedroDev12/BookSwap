@@ -1,48 +1,64 @@
 import { useState } from "react";
+import { Link } from "react-router-dom"; // Importação do Link corrigida
 
-//import imgs/componentes
+// Importação de ícones e componentes
 import { CiHeart } from "react-icons/ci";
 import { FaArrowRight } from "react-icons/fa";
 import Header from "../components/Header";
-import Livros from "./assets/img/livros.png"
+import Livros from "../assets/img/livros.png";
 
+function Inicial() {
+  return (
+    <div className="">
+      <Header />
 
-function App() {
-    return (
-      <div className="">
-        <Header />
+      <section className="my-25 flex items-center gap-5 px-5 justify-between">
+        <div className="flex flex-col gap-4 text-3xl w-200">
+          <p className="border border- py-2 px-4 flex items-center text-[16px] text-[#4693DA] rounded-4xl w-fit">
+            <CiHeart className="text-2xl" />
+            Troque livros de forma inteligente!
+          </p>
+          <h1 className="text-3xl font-bold">
+            Encontre o Seu Próximo{" "}
+            <span className="bg-linear-to-r from-[#3B7389] to-[#38C4FD] bg-clip-text text-transparent text-3xl">
+              Livro Favorito!
+            </span>
+          </h1>
 
-        <section className="my-25 flex items-center gap-5 px-5 justify-between">
-          <div className="flex flex-col gap-4 w-125">
-            <p className="border border- py-2 px-4 flex items-center text-[16px] text-[#4693DA] rounded-4xl w-fit">
-              <CiHeart className="text-2xl"/>
-              Troque livros de forma inteligente!
-            </p>
-            <h1 className="text-3xl font-bold">
-              Encontre o Seu Próximo{" "}
-              <span className="bg-linear-to-r from-[#3B7389] to-[#38C4FD] bg-clip-text text-transparent text-3xl">
-                Livro Favorito!
-              </span>
-            </h1>
+          <p className="text-base text-gray-4xl">
+            Deslize, combine e troque livros com outros apaixonados pela
+            leitura. Uma nova forma de descobrir histórias incríveis.
+          </p>
 
-            <p>
-              Deslize, combine e troque livros com outros apaixonados pela
-              leitura. Uma nova forma de descobrir histórias incríveis.
-            </p>
-
-            <div className="flex gap-5">
-              <a href="" className="py-2 px-5 rounded-2xl text-white flex items-center gap-2 bg-[#2A6183]">Começar a Trocar <FaArrowRight /></a>
-              <a href="" className="py-2 px-5 rounded-2xl text-white bg-[#89B8FF]">Ver Loja</a>
-            </div>
+          <div className="flex gap-5 text-base">
+            {/* Botão corrigido usando Link para ir para a tela de login */}
+            <Link 
+              to="/pLogin" 
+              className="py-2 px-5 rounded-2xl text-white flex items-center gap-2 bg-[#2A6183] hover:bg-[#1F4959] transition-colors"
+            >
+              Começar a Trocar <FaArrowRight />
+            </Link>
+            
+            <a href="" className="py-2 px-5 rounded-2xl text-white bg-[#89B8FF]">
+              Ver Loja
+            </a>
           </div>
-          <img
-            src={Livros}
-            alt=""
-            className="w-120 bg-[#E0E0E0] p-5 rounded-4xl shadow-xl/30"
-          />
-        </section>
-      </div>
-    );
+        </div>
+        
+        <img
+          src={Livros}
+          alt="Livros"
+          className="w-150 bg-[#E0E0E0] p-5 rounded-4xl shadow-xl/30"
+        />
+      </section>
+
+      <section className="px-5">
+        <h1 className="text-xl font-bold flex gap-1">
+          Por que escolher o <span className="text-[#3B7389]">BookSwap?</span>
+        </h1>
+      </section>
+    </div>
+  );
 }
 
-export default App;
+export default Inicial;

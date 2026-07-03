@@ -1,5 +1,6 @@
 import Logo from "../assets/img/logo.png"
-
+import { Link } from "react-router-dom";
+import Login from "../pages/pLogin"
 
 function Header() {
     return (
@@ -9,7 +10,7 @@ function Header() {
                     <img src={Logo} alt="" className="w-23" />
                     <p className="font-bold text-white text-2xl">Book<br/>Swap</p>
                 </div>
-                <a href="" className="px-5 py-2 border-white border-[1.5px] font-bold text-white text-2xl rounded-2xl">Entrar</a>
+                <Link to="/pLogin" className="px-5 py-2 border-white border-[1.5px] font-bold text-white text-2xl rounded-2xl">Entrar</Link>
             </header>
         </div>
     )
