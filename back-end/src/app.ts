@@ -12,9 +12,20 @@ import userBookRoutes from "./Routes/userBookRoutes"
 import userPageRoutes from "./Routes/userPageRoutes"
 import userRoutes from "./Routes/userRoutes"
 
+
+
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors:{
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+const port = 3000
+const host = '0.0.0.0'
+
+
 
 app.use(express.json());
 app.use("/chats", chatRoutes);
@@ -27,8 +38,12 @@ app.use("/userBook", userBookRoutes)
 app.use("/userPage", userPageRoutes)
 app.use("/users", userRoutes)
 
+
+
 initSocket(io); // inicializa o socket
 
-server.listen(3000, () => {
-    console.log("Servidor aberto porta 3000");
+
+
+server.listen(port, host, () => {
+  console.log(`Servidor aberto http://${host}:${port}`);
 });
