@@ -2,10 +2,10 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-import "./api.js"
 
 import Inicial from './pages/pInicial';
 import Login from './pages/pLogin';
+import Register from './pages/pRegister';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -16,6 +16,9 @@ createRoot(document.getElementById('root')).render(
         
         {/* Rota da Página de Login */}
         <Route path="/pLogin" element={<Login />} />
+
+        {/* Rota da Página de Registro */}
+        <Route path="/pRegister" element={<Register/>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
