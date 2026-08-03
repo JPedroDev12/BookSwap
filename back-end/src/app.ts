@@ -11,6 +11,7 @@ import swappingRoutes from "./Routes/swappingRoutes"
 import userBookRoutes from "./Routes/userBookRoutes"
 import userPageRoutes from "./Routes/userPageRoutes"
 import userRoutes from "./Routes/userRoutes"
+import authRoutes from "./Routes/authRoutes"
 
 
 
@@ -28,6 +29,18 @@ const host = '0.0.0.0'
 
 
 app.use(express.json());
+
+// Libera o CORS para as rotas REST (o cors do socket.io acima não cobre requisições HTTP normais)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
 app.use("/chats", chatRoutes);
 app.use("/messages", messagesRoutes);
 app.use("/books", bookRoutes)
@@ -37,6 +50,7 @@ app.use("/swapping", swappingRoutes)
 app.use("/userBook", userBookRoutes)
 app.use("/userPage", userPageRoutes)
 app.use("/users", userRoutes)
+app.use("/auth", authRoutes)
 
 
 

@@ -7,7 +7,7 @@ CREATE TABLE user (
     username VARCHAR (100) NOT NULL,
     email VARCHAR (100) NOT NULL UNIQUE,
     CPF CHAR (11) UNIQUE,
-    password VARCHAR (50) NOT NULL,
+    password VARCHAR (255) NOT NULL,
     theme_status ENUM ('Modo claro', 'Modo escuro') DEFAULT 'Modo claro',
     created_at TIMESTAMP DEFAULT current_timestamp
 );
