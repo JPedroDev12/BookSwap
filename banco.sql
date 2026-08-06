@@ -13,11 +13,12 @@ CREATE TABLE user (
 );
 
 CREATE TABLE user_page (
+    photo_url LONGTEXT,
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     description TEXT,
     FOREIGN KEY (user_id) REFERENCES user(id)
-);
+); 
 
 CREATE TABLE book (
     id INT AUTO_INCREMENT PRIMARY KEY,
