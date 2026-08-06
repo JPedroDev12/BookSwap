@@ -7,12 +7,23 @@ export const socket = io(BASE_URL, {
 });
 
 export const fetchAPI = async (endpoint, options = {}) => {
+  const token = localStorage.getItem("token");
+
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     headers: {
       "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
     ...options,
   });
-  return response.json();
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    // Lança um erro com a mensagem vinda do backend (ex: "Token inválido ou expirado")
+    throw new Error(data.Error || data.error || `Erro na requisição (${response.status})`);
+  }
+
+  return data;
 };

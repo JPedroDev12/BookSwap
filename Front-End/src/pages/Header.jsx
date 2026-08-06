@@ -48,7 +48,7 @@ function Header() {
                 </Link>
 
                 {usuario ? (
-                    <Link to={`/pPerfil/${usuario.id}`} className="flex items-center gap-3">
+                    <Link to="/pPerfil" className="flex items-center gap-3">
                         <span className="font-bold text-white text-base md:text-xl">
                             {usuario.nome || usuario.username || usuario.name || "Usuário"}
                         </span>

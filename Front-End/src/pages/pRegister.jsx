@@ -43,7 +43,7 @@ function Register() {
 
         navigate("/pLogin");
       } catch (err) {
-        setErro("Não foi possível conectar ao servidor.");
+        setErro(err.message || "Não foi possível conectar ao servidor.");
       } finally {
         setCarregando(false);
       }

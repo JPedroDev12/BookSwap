@@ -1,116 +1,289 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
- 
-// Ícones
-
-import { FaEdit } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { IoChatbubbleOutline, IoBagOutline } from "react-icons/io5";
 import Logo from "../assets/img/logo.png";
- 
+import Header from "../components/Header";
+import { fetchAPI } from "../api";
 
-// MOCK DE DADOS trocar pelos dados reais do usuário quando estiver logado API cade cade?
+const legendaCores = [
+  { cor: "#EF4444", label: "Não Gostei" },
+  { cor: "#22C55E", label: "Gostei" },
+  { cor: "#3B82F6", label: "Lidos" },
+  { cor: "#D4A017", label: "Lendo" },
+  { cor: "#D600D6", label: "Quero Ler" },
+];
 
-const usuario = {
-  nome: "Usuario",
-  fotoUrl: "", // se vazio mostra o círculo placeholder
-  sobreMim:
-    "Apaixonado(a) por ficção científica e fantasia. Sempre em busca de uma boa troca! Adoro conhecer novas histórias e trocar recomendações com outros leitores.",
-  cores: ["#9CA3AF", "#EF4444", "#22C55E", "#3B82F6", "#F97316", "#A855F7"],
-};
- 
 const estatisticas = [
-  { label: "Quero Ler", valor: 15 },
-  { label: "Lidos", valor: 7 },
-  { label: "Lendo", valor: 1 },
-  { label: "Não Gostei", valor: 2 },
-  { label: "Avaliados", valor: 4 },
+  { label: "Quero Ler", valor: 0 },
+  { label: "Lidos", valor: 0 },
+  { label: "Lendo", valor: 0 },
+  { label: "Não Gostei", valor: 0 },
+  { label: "Avaliados", valor: 0 },
 ];
- 
-const livros = [
-  { titulo: "O Ladrão de Raios", autor: "Rick Riordan", cor: "#2F5E4E" },
-  { titulo: "O Mar de Monstros", autor: "Rick Riordan", cor: "#D8D06A" },
-  { titulo: "O Espadachim de Carvão", autor: "Affonso Solano", cor: "#1B2B22" },
-  { titulo: "O Espadachim de Carvão", autor: "Affonso Solano", cor: "#6C4FA1" },
-  { titulo: "Os Assassinatos da Rua Morgue", autor: "Edgar Allan Poe", cor: "#3B1414" },
-  { titulo: "A Verdade Sobre o Caso do Sr. Valdemar", autor: "Edgar Allan Poe", cor: "#C9A24B" },
-  { titulo: "A Lâmina da Assassina", autor: "Sarah J. Maas", cor: "#1C1C1C" },
-];
- 
-// HEADER como se estivesse logado rever futuramente, com o nome do usuário e a foto de perfil
 
-function HeaderPerfil() {
-  return (
-    <header className="flex justify-between items-center px-8 py-3 bg-linear-to-r from-[#0F2027] via-[#203A43] to-[#2C5364]">
-      <div className="flex items-center gap-2">
-        <img src={Logo} alt="BookSwap" className="w-10" />
-        <p className="font-bold text-white text-lg leading-4">
-          Book<br />Swap
-        </p>
-      </div>
- 
-      <nav className="flex gap-8 text-gray-200 text-[15px]">
-        <Link to="/" className="hover:text-white transition-colors">Início</Link>
-        <Link to="/loja" className="hover:text-white transition-colors">Loja</Link>
-        <Link to="/swapping" className="hover:text-white transition-colors">Swapping</Link>
-      </nav>
- 
-      <div className="flex items-center gap-4">
-        <IoChatbubbleOutline className="text-white text-2xl bg-[#4C6B8A]/60 p-2 rounded-full w-9 h-9 cursor-pointer" />
-        <span className="text-white text-[15px]">Usuario</span>
-        <div className="w-9 h-9 rounded-full bg-white" />
-      </div>
-    </header>
-  );
-}
- 
-// PÁGINA DE PERFIL
+const livros = [];
 
 function Perfil() {
-  return (
-    <div className="min-h-screen bg-[#1E1E1E] text-white">
-      <HeaderPerfil />
- 
-      {/* Seção de perfil foto, nome, estatísticas e botão de editar */}
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const inputFotoRef = useRef(null);
 
-      <section className="flex items-center gap-8 px-10 py-10">
-        <div className="w-24 h-24 rounded-full bg-white shrink-0 overflow-hidden">
-          {usuario.fotoUrl && (
-            <img src={usuario.fotoUrl} alt={usuario.nome} className="w-full h-full object-cover" />
-          )}
+  const [usuario, setUsuario] = useState(() => {
+    const dadosUsuario = JSON.parse(localStorage.getItem("user")) || {};
+    return {
+      id: dadosUsuario.id,
+      nome: dadosUsuario.nome || dadosUsuario.username || dadosUsuario.name || "Usuário",
+      fotoUrl: dadosUsuario.photo_url || dadosUsuario.fotoUrl || "",
+      sobreMim: dadosUsuario.description || dadosUsuario.sobreMim || "",
+    };
+  });
+
+  const [editando, setEditando] = useState(false);
+  const [formTemp, setFormTemp] = useState(usuario);
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState("");
+  const [arquivoSelecionado, setArquivoSelecionado] = useState(null);
+
+  const ehMeuPerfil = !id || id === String(usuario.id);
+
+  useEffect(() => {
+    async function carregarPerfil() {
+      try {
+        const resposta = await fetchAPI(`/users/${id}`);
+        setUsuario({
+          id: resposta.data.id,
+          nome: resposta.data.username,
+          fotoUrl: resposta.data.photo_url || "",
+          sobreMim: resposta.data.description || "",
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    if (id && id !== String(usuario.id)) {
+      carregarPerfil();
+    }
+  }, [id, usuario.id]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
+  const handleFotoClick = () => {
+    if (editando) {
+      inputFotoRef.current.click();
+    }
+  };
+
+  // ✅ CORRIGIDO - Converte a imagem para Base64 em vez de usar blob URL
+  const handleMudarFoto = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setArquivoSelecionado(file);
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        // reader.result já vem como string base64 (ex: "data:image/png;base64,...")
+        setFormTemp((prev) => ({ ...prev, fotoUrl: reader.result }));
+      };
+      reader.onerror = () => {
+        setErro("Não foi possível carregar a imagem selecionada.");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleEditarClick = async () => {
+    if (!editando) {
+      setFormTemp(usuario);
+      setErro("");
+      setEditando(true);
+      return;
+    }
+
+    setSalvando(true);
+    setErro("");
+
+    try {
+      await fetchAPI(`/users/${usuario.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ username: formTemp.nome }),
+      });
+
+      let paginaExistente = null;
+      try {
+        const resposta = await fetchAPI(`/userPage/${usuario.id}`);
+        paginaExistente = resposta.data;
+      } catch (err) {
+        paginaExistente = null;
+      }
+
+      const bodyPagina = {
+        description: formTemp.sobreMim,
+        photo_url: formTemp.fotoUrl,
+      };
+
+      if (paginaExistente) {
+        await fetchAPI(`/userPage/${paginaExistente.id}`, {
+          method: "PUT",
+          body: JSON.stringify(bodyPagina),
+        });
+      } else {
+        await fetchAPI(`/userPage`, {
+          method: "POST",
+          body: JSON.stringify({
+            user_id: usuario.id,
+            ...bodyPagina
+          }),
+        });
+      }
+
+      const usuarioAtualizado = { ...usuario, ...formTemp };
+      setUsuario(usuarioAtualizado);
+
+      const dadosAtuais = JSON.parse(localStorage.getItem("user")) || {};
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          ...dadosAtuais,
+          username: formTemp.nome,
+          nome: formTemp.nome,
+          photo_url: formTemp.fotoUrl,
+          fotoUrl: formTemp.fotoUrl,
+          description: formTemp.sobreMim,
+          sobreMim: formTemp.sobreMim,
+        })
+      );
+
+      window.dispatchEvent(new Event("usuarioAtualizado"));
+      setEditando(false);
+      setArquivoSelecionado(null);
+    } catch (err) {
+      console.error(err);
+      setErro(err.message || "Não foi possível salvar as alterações. Tente novamente.");
+    } finally {
+      setSalvando(false);
+    }
+  };
+
+  const handleCancelar = () => {
+    setFormTemp(usuario);
+    setArquivoSelecionado(null);
+    setErro("");
+    setEditando(false);
+  };
+
+  return (
+    <div className="min-h-screen">
+      <Header />
+
+      <section className="flex flex-col items-center gap-6 px-4 sm:px-6 md:px-10 py-8 md:py-6 text-center md:flex-row md:text-left md:gap-8">
+        <div className="flex flex-col items-center gap-3 md:flex-row md:gap-4">
+          <div 
+            className={`relative w-20 h-20 sm:w-24 sm:h-24 md:w-26 md:h-26 rounded-full bg-white border-2 border-gray-400 shrink-0 overflow-hidden ${editando ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
+            onClick={handleFotoClick}
+          >
+            {(editando ? formTemp.fotoUrl : usuario.fotoUrl) && (
+              <img
+                src={editando ? formTemp.fotoUrl : usuario.fotoUrl}
+                alt={usuario.nome}
+                className="w-full h-full object-cover"
+              />
+            )}
+            
+            {editando && (
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-xs font-bold">
+                Trocar
+              </div>
+            )}
+          </div>
+
+          <input 
+            type="file" 
+            accept="image/*" 
+            ref={inputFotoRef}
+            className="hidden" 
+            onChange={handleMudarFoto}
+          />
+
+          <div className="flex flex-col gap-2">
+            {editando ? (
+              <input
+                type="text"
+                value={formTemp.nome}
+                onChange={(e) => setFormTemp((prev) => ({ ...prev, nome: e.target.value }))}
+                className="text-2xl sm:text-3xl md:text-xl font-bold shrink-0 border border-gray-400 rounded-lg px-2 py-1 bg-transparent"
+                placeholder="Seu nome"
+              />
+            ) : (
+              <h1 className="text-2xl sm:text-3xl md:text-xl font-bold shrink-0">{usuario.nome}</h1>
+            )}
+          </div>
         </div>
- 
-        <h1 className="text-3xl font-bold shrink-0">{usuario.nome}</h1>
- 
-        <div className="flex gap-6">
+
+        <div className="grid grid-cols-3 sm:grid-cols-5 md:flex gap-x-4 gap-y-4 sm:gap-6 md:gap-0">
           {estatisticas.map((item, i) => (
             <div
               key={item.label}
-              className={`flex flex-col items-center px-4 ${
-                i !== estatisticas.length - 1 ? "border-r border-gray-600" : ""
+              className={`flex flex-col gap-1 items-center px-2 md:px-4 ${
+                i !== estatisticas.length - 1 ? "md:border-r md:border-gray-600" : ""
               }`}
             >
-              <span className="text-gray-300 text-sm">{item.label}</span>
+              <span className="text-gray-700 text-xs sm:text-sm">{item.label}</span>
               <span className="text-[#4693DA] font-bold text-lg">{item.valor}</span>
             </div>
           ))}
         </div>
- 
-        <button
-          type="button"
-          className="ml-auto flex items-center gap-2 text-sm text-gray-200 border border-gray-500 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors cursor-pointer"
-        >
-          <FaEdit /> Editar Perfil
-        </button>
+
+        {ehMeuPerfil && (
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto md:ml-auto md:w-auto">
+            {erro && <span className="text-red-500 text-xs self-center">{erro}</span>}
+
+            <button
+              type="button"
+              onClick={handleEditarClick}
+              disabled={salvando}
+              className="flex items-center justify-center gap-2 text-sm text-gray-700 border border-gray-500 rounded-xl px-4 py-2 hover:bg-black/10 transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {editando ? (
+                <>
+                  <FaSave /> {salvando ? "Salvando..." : "Salvar"}
+                </>
+              ) : (
+                <>
+                  <FaEdit /> Editar Perfil
+                </>
+              )}
+            </button>
+
+            {editando && (
+              <button
+                type="button"
+                onClick={handleCancelar}
+                disabled={salvando}
+                className="flex items-center justify-center gap-2 text-sm text-gray-500 border border-gray-400 rounded-xl px-4 py-2 hover:bg-black/10 transition-colors cursor-pointer disabled:opacity-50"
+              >
+                <FaTimes /> Cancelar
+              </button>
+            )}
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center gap-2 text-sm text-red-500 px-4 py-2 border border-red-500 rounded-xl hover:bg-red-500/10 transition-colors cursor-pointer"
+            >
+              Sair da Conta
+            </button>
+          </div>
+        )}
       </section>
- 
-      {/* Conteúdo principal livros amostra e sobre mim */}
 
-      <section className="flex gap-6 px-10 pb-10">
-
-        {/*  livros amostra*/}
-
-        <div className="flex-1 bg-linear-to-br from-[#2C5364] to-[#0F2027] rounded-3xl p-6 shadow-xl/30">
-          <div className="grid grid-cols-4 gap-5">
+      <section className="flex flex-col lg:flex-row items-stretch gap-6 px-4 sm:px-6 md:px-10 pb-10">
+        <div className="flex-1 bg-linear-to-br from-[#2C5364] to-[#0F2027] rounded-3xl p-4 sm:p-6 md:p-8 shadow-xl/30">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5">
             {livros.map((livro, i) => (
               <div key={i} className="flex flex-col gap-2 cursor-pointer group">
                 <div
@@ -124,29 +297,39 @@ function Perfil() {
                 <span className="text-gray-300 text-xs truncate">{livro.autor}</span>
               </div>
             ))}
- 
-            {/* Espaço vazio / botão para adicionar livro novoo */}
 
-            <div className="aspect-2/3 rounded-lg border-2 border-dashed border-gray-500 flex items-center justify-center text-gray-400 hover:text-white hover:border-white transition-colors cursor-pointer">
-              <IoBagOutline className="text-3xl" />
-            </div>
+            {ehMeuPerfil && (
+              <div className="aspect-2/3 rounded-lg border-2 border-dashed border-gray-500 flex items-center justify-center text-gray-400 hover:text-white hover:border-white transition-colors cursor-pointer">
+                <IoBagOutline className="text-3xl" />
+              </div>
+            )}
           </div>
         </div>
- 
-        {/* Sobre mim */}
 
-        <aside className="w-80 shrink-0 bg-linear-to-b from-[#2C5364] to-[#0F2027] rounded-3xl p-6 flex flex-col gap-4">
-          <h2 className="text-xl font-bold underline underline-offset-4">Sobre Mim</h2>
-          <p className="text-gray-200 text-[15px] leading-relaxed">{usuario.sobreMim}</p>
- 
+        <aside className="w-full lg:w-80 shrink-0 bg-linear-to-b from-[#2C5364] to-[#0F2027] rounded-3xl p-6 flex flex-col gap-4">
+          <h2 className="text-xl font-bold underline text-white underline-offset-4">Sobre Mim</h2>
+
+          {editando ? (
+            <textarea
+              value={formTemp.sobreMim}
+              onChange={(e) => setFormTemp((prev) => ({ ...prev, sobreMim: e.target.value }))}
+              className="text-gray-200 text-[15px] leading-relaxed bg-transparent border border-white/30 rounded-lg p-2 resize-none min-h-25"
+            />
+          ) : (
+            <p className="text-gray-200 text-[15px] leading-relaxed">
+              {usuario.sobreMim || "Nenhuma descrição informada."}
+            </p>
+          )}
+
           <div className="mt-auto pt-4 border-t border-white/10">
-            <span className="text-gray-300 text-sm">cores que vão corresponder a os livros</span> {/* rever mudar de local arrumar igual no figma */}
-            <div className="flex gap-2 mt-2">
-              {usuario.cores.map((cor) => (
+            <span className="text-gray-300 font-bold text-xl">Filtro</span>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {legendaCores.map((item) => (
                 <span
-                  key={cor}
+                  key={item.label}
+                  title={item.label}
                   className="w-6 h-6 rounded-full border border-white/30"
-                  style={{ backgroundColor: cor }}
+                  style={{ backgroundColor: item.cor }}
                 />
               ))}
             </div>
@@ -156,5 +339,5 @@ function Perfil() {
     </div>
   );
 }
- 
+
 export default Perfil;

@@ -36,10 +36,25 @@ function Login() {
       }
 
       localStorage.setItem("token", resposta.token);
-      localStorage.setItem("user", JSON.stringify(resposta.data));
+
+      // Busca a página de perfil (foto e descrição) desse usuário.
+      // Se ele nunca salvou nada ainda, essa rota retorna 404 — nesse caso seguimos sem elas.
+      let userPage = {};
+      try {
+        const paginaResposta = await fetchAPI(`/userPage/${resposta.data.id}`);
+        userPage = {
+          photo_url: paginaResposta.data.photo_url || "",
+          description: paginaResposta.data.description || "",
+        };
+      } catch (err) {
+        // Sem página de perfil ainda, tudo bem, segue só com os dados do user
+      }
+
+      const usuarioCompleto = { ...resposta.data, ...userPage };
+      localStorage.setItem("user", JSON.stringify(usuarioCompleto));
       navigate("/");
     } catch (err) {
-      setErro("Não foi possível conectar ao servidor.");
+      setErro(err.message || "Não foi possível conectar ao servidor.");
     } finally {
       setCarregando(false);
     }
