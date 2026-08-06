@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { GetUsers, CreateUser, DeleteUser, GetUserById, UpdateUser } from "../Controller/userController";
+import { GetUsers, DeleteUser, GetUserById, UpdateUser } from "../Controller/userController";
+import { verificarToken } from "../Middleware/authMiddleware";
 
 const router = Router()
 
-router.get('/', GetUsers)
-router.get('/:id', GetUserById)
-router.post('/', CreateUser)
-router.put('/:id', UpdateUser)
-router.delete('/:id', DeleteUser)
+router.get('/', verificarToken, GetUsers)
+router.get('/:id', verificarToken, GetUserById)
+router.put('/:id', verificarToken, UpdateUser)
+router.delete('/:id', verificarToken, DeleteUser)
 
 export default router;

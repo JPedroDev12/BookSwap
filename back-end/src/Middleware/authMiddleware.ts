@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "bookswap_secret_dev";
+const JWT_SECRET = process.env.JWT_SECRET || "bookswap_dev_secret";
 
 export interface AuthRequest extends Request {
     usuario?: { id: number; email: string; username: string };

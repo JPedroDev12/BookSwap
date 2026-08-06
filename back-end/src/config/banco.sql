@@ -9,7 +9,7 @@ CREATE TABLE user (
     CPF CHAR (11) UNIQUE,
     password VARCHAR (255) NOT NULL,
     theme_status ENUM ('Modo claro', 'Modo escuro') DEFAULT 'Modo claro',
-    created_at TIMESTAMP DEFAULT current_timestamp
+    create_at TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE user_page (
