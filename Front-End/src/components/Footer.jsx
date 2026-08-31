@@ -33,13 +33,13 @@ function Footer() {
                 <h1 className="font-bold text-xl text-white">Plataformas</h1>
                 <div className="flex flex-col text-gray-400">
                   <Link
-                    to=""
+                    to="/swapping"
                     className="hover:text-gray-200 transition-colors duration-300 py-1 md:py-0"
                   >
                     Swapping
                   </Link>
                   <Link
-                    to=""
+                    to="/loja"
                     className="hover:text-gray-200 transition-colors duration-300 py-1 md:py-0"
                   >
                     Loja

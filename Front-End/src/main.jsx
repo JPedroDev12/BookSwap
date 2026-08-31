@@ -7,6 +7,9 @@ import Inicial from './pages/pInicial';
 import Login from './pages/pLogin';
 import Register from './pages/pRegister';
 import Perfil from "./pages/Pperfil"
+import Loja from "./pages/pLoja"
+import Swapping from "./pages/pSwapping"
+import Chat from "./pages/pChat"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -23,6 +26,16 @@ createRoot(document.getElementById('root')).render(
 
         {/* Rota da Página de Perfil */}
         <Route path="/pPerfil/:id" element={<Perfil/>} />
+
+        {/* Rota da Loja */}
+        <Route path="/loja" element={<Loja/>} />
+
+        {/* Rota do Swapping (deslizar/curtir livros) */}
+        <Route path="/swapping" element={<Swapping/>} />
+
+        {/* Rota do Chat (conversar com quem deu match) */}
+        <Route path="/chat" element={<Chat/>} />
+        <Route path="/chat/:id" element={<Chat/>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

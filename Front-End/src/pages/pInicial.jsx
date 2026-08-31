@@ -12,6 +12,14 @@ import { IoBagOutline } from "react-icons/io5";
 
 
 function Inicial() {
+  const usuario = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || null;
+    } catch {
+      return null;
+    }
+  })();
+
   return (
     <div className="overflow-x-hidden">
       <Header />
@@ -36,15 +44,15 @@ function Inicial() {
 
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 text-base w-full sm:w-auto">
             <Link 
-              to="/pLogin" 
+              to={usuario ? "/swapping" : "/pLogin"} 
               className="py-3 md:py-2 px-5 rounded-2xl text-white flex items-center justify-center gap-2 bg-[#2A6183] hover:bg-[#1F4959] transition-colors w-full sm:w-auto"
             >
               Começar a Trocar <FaArrowRight />
             </Link>
             
-            <a href="" className="py-3 md:py-2 px-5 rounded-2xl text-white bg-[#89B8FF] text-center w-full sm:w-auto">
+            <Link to="/loja" className="py-3 md:py-2 px-5 rounded-2xl text-white bg-[#89B8FF] text-center w-full sm:w-auto">
               Ver Loja
-            </a>
+            </Link>
           </div>
         </div>
         

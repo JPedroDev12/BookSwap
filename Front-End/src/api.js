@@ -1,6 +1,10 @@
 import { io } from "socket.io-client";
 
-const BASE_URL = "http://localhost:3000"; //ip do pc (trocar caso necessário)!!!!!!
+// Em vez de fixar "localhost" (que só funciona testando no mesmo PC do servidor),
+// usa o mesmo host que foi digitado no navegador para acessar o site.
+// Ex: acessando de outro PC por http://192.168.0.10:5173, o backend
+// será chamado em http://192.168.0.10:3000 automaticamente.
+const BASE_URL = `http://${window.location.hostname}:3000`;
 
 export const socket = io(BASE_URL, {
   autoConnect: true
