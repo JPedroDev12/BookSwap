@@ -5,5 +5,6 @@ export interface User {
     CPF: number;
     password: string;
     theme_status: 'Modo claro' | 'Modo escuro';
+    is_admin: boolean;
     create_at: Date;
 }

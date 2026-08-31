@@ -8,5 +8,7 @@ export interface Book {
     description: string;
     genre: string;
     year_published: number;
+    price: number;
+    listed_in_store: boolean;
     created_at: Date;
 }

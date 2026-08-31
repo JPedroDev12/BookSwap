@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "bookswap_dev_secret";
 
 export interface AuthRequest extends Request {
-    usuario?: { id: number; email: string; username: string };
+    usuario?: { id: number; email: string; username: string; is_admin?: boolean };
 }
 
 export function verificarToken(req: AuthRequest, res: Response, next: NextFunction) {

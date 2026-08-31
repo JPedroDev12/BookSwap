@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { GetChats, CreateChat } from "../Controller/chatController";
+import { GetChats, GetChatById, CreateChat } from "../Controller/chatController";
+import { verificarToken } from "../Middleware/authMiddleware";
 
 const router = Router()
 
-router.get('/:user_id', GetChats)
-router.post('/', CreateChat)
+router.get('/single/:id', verificarToken, GetChatById)
+router.get('/:user_id', verificarToken, GetChats)
+router.post('/', verificarToken, CreateChat)
 
 export default router;

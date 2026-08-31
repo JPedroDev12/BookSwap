@@ -9,7 +9,13 @@ export function initSocket(io: Server) {
         console.log(`Socket conectado: ${socket.id}`); // mostra que o usuário conectou
 
         // joinChat = evento que o cliente chama para entrar em um chat específico
-        socket.on("joinChat", async (chat_id: number) => {
+        socket.on("joinChat", async ({ chat_id, user_id }: { chat_id: number; user_id: number }) => {
+
+            const chat = await db("chat").where({ id: chat_id }).first();
+            if (!chat || (chat.user1_id !== user_id && chat.user2_id !== user_id)) {
+                socket.emit("chatError", "Você não faz parte dessa conversa");
+                return;
+            }
 
             socket.join(`chat_${chat_id}`); 
             // entra na "sala" do chat
@@ -26,10 +32,20 @@ export function initSocket(io: Server) {
             console.log(`Socket ${socket.id} entrou no chat ${chat_id}`);
         });
 
+        socket.on("leaveChat", (chat_id: number) => {
+            socket.leave(`chat_${chat_id}`);
+        });
+
         // sendMessage = evento que o cliente usa para enviar mensagem
         socket.on("sendMessage", async (data: CreateMessagesDTO) => {
 
-            // data = { chat_id, autor_id, messages }
+            // data = { chat_id, author_id, message }
+
+            const chat = await db("chat").where({ id: data.chat_id }).first();
+            if (!chat || (chat.user1_id !== data.author_id && chat.user2_id !== data.author_id)) {
+                socket.emit("chatError", "Você não faz parte dessa conversa");
+                return;
+            }
 
             // salva a mensagem no banco
             const [id] = await db<Messages>("messages").insert(data);

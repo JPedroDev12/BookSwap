@@ -23,7 +23,7 @@ const io = new Server(server, {
 });
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use("/chats", chatRoutes);
 app.use("/messages", messagesRoutes);
 app.use("/books", bookRoutes)
@@ -34,6 +34,27 @@ app.use("/userBook", userBookRoutes)
 app.use("/userPage", userPageRoutes)
 app.use("/users", userRoutes)
 app.use("/auth", authRoutes)
+
+// Handler de erro global: garante que qualquer erro (inclusive os que
+// "escapam" de um async/await sem try/catch) volte como JSON com uma
+// mensagem legível, em vez de um 500 em branco/HTML difícil de depurar.
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error("Erro não tratado:", err);
+
+  if (err?.code === "ER_DATA_TOO_LONG") {
+    return res.status(400).json({
+      Error: `O campo "${err.sqlMessage?.match(/column '(.+?)'/)?.[1] || "desconhecido"}" recebeu um valor muito grande para o banco.`,
+    });
+  }
+
+  if (err?.code === "ER_DUP_ENTRY") {
+    return res.status(409).json({ Error: "Esse registro já existe." });
+  }
+
+  return res.status(500).json({
+    Error: "Erro interno no servidor. Tente novamente em instantes.",
+  });
+});
 
 initSocket(io); // inicializa o socket
 

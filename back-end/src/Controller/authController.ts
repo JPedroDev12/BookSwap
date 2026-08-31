@@ -58,7 +58,7 @@ export async function Login(req: Request, res: Response) {
         return res.status(401).json({ Error: "Email ou senha inválidos" })
     }
 
-    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "7d" })
+    const token = jwt.sign({ id: user.id, email: user.email, username: user.username, is_admin: !!user.is_admin }, JWT_SECRET, { expiresIn: "7d" })
     const { password: _senha, ...userSemSenha } = user
 
     return res.status(200).json({ token, data: userSemSenha })

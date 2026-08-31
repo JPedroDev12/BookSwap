@@ -20,9 +20,10 @@ export async function getUserPage(req: Request, res: Response) {
         .first();
 
     if (!page) {
-        return res.status(404).json({
-            Error: "Perfil não encontrado"
-        });
+        // Conta recém-criada ainda não salvou uma página de perfil — isso é
+        // esperado (não é um erro), então respondemos 200 com data: null
+        // em vez de 404, pra não sujar o console do navegador.
+        return res.status(200).json({ data: null });
     }
 
     // Busca os livros favoritos separado

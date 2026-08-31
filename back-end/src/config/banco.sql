@@ -9,6 +9,7 @@ CREATE TABLE user (
     CPF CHAR (11) UNIQUE,
     password VARCHAR (255) NOT NULL,
     theme_status ENUM ('Modo claro', 'Modo escuro') DEFAULT 'Modo claro',
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE, -- só quem tem is_admin = TRUE pode cadastrar livros na Loja
     create_at TIMESTAMP DEFAULT current_timestamp
 );
 
@@ -16,7 +17,7 @@ CREATE TABLE user_page (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     description TEXT,
-    photo_url VARCHAR(300),
+    photo_url MEDIUMTEXT,
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
@@ -30,6 +31,8 @@ CREATE TABLE book (
     description TEXT,
     genre VARCHAR (100),
     year_published INT,
+    price DECIMAL (10,2) NOT NULL DEFAULT 0.00,
+    listed_in_store BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT current_timestamp,
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
@@ -39,6 +42,8 @@ CREATE TABLE user_book (
     user_id INT NOT NULL,
     book_id INT NOT NULL,
     status ENUM ('Quero ler', 'Lendo', 'Lidos', 'Gostei', 'Não Gostei') NOT NULL DEFAULT 'Quero ler',
+    rating TINYINT NULL,
+    UNIQUE KEY uq_user_book (user_id, book_id),
     FOREIGN KEY (user_id) REFERENCES user (id),
     FOREIGN KEY (book_id) REFERENCES book (id)
 );
@@ -47,6 +52,7 @@ CREATE TABLE book_trade (
     id INT AUTO_INCREMENT PRIMARY KEY,
     book_id INT NOT NULL,
     user_id INT NOT NULL,
+    UNIQUE KEY uq_book_trade (user_id, book_id),
     FOREIGN KEY (user_id) REFERENCES user (id),
     FOREIGN KEY (book_id) REFERENCES book (id)
 );
@@ -97,3 +103,31 @@ CREATE TABLE messages (
     FOREIGN KEY (chat_id) REFERENCES chat(id) ON DELETE CASCADE,
     FOREIGN KEY (author_id) REFERENCES user(id)
 );
+
+ALTER TABLE user_book
+  ADD COLUMN rating TINYINT NULL AFTER status;
+
+ALTER TABLE user_book
+  ADD UNIQUE KEY uq_user_book (user_id, book_id);
+
+ALTER TABLE book_trade
+  ADD UNIQUE KEY uq_book_trade (user_id, book_id);
+
+ALTER TABLE book
+  ADD COLUMN price DECIMAL(10,2) NOT NULL DEFAULT 0.00 AFTER year_published;
+
+ALTER TABLE user_page
+  MODIFY COLUMN photo_url MEDIUMTEXT;
+
+ALTER TABLE book
+  ADD COLUMN listed_in_store BOOLEAN NOT NULL DEFAULT TRUE AFTER price;
+
+-- Só quem tem is_admin = TRUE pode cadastrar livros na Loja (ver bookController).
+ALTER TABLE user
+  ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- Conta de admin padrão.
+-- Login: admin@bookswap.com   Senha: Admin@BookSwap123
+-- (troque a senha depois do primeiro login, ela já está com hash bcrypt aqui embaixo)
+INSERT INTO user (username, email, password, is_admin)
+VALUES ('admin', 'admin@bookswap.com', '$2b$10$wAeP6JQwM/gkGTtti.LTU.sqA.HK5Ex/QXAZ299JdI.ZqllXSYnHi', TRUE);

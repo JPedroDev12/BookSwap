@@ -1,4 +1,5 @@
-export type BookStatus = | 'Quero Ler' | 'Lendo' | 'Lidos' | 'Gostei' | 'Não Gostei'
+// Precisa bater exatamente com o ENUM da coluna `status` em user_book (banco.sql)
+export type BookStatus = | 'Quero ler' | 'Lendo' | 'Lidos' | 'Gostei' | 'Não Gostei'
 
 
 export interface UserBook {
@@ -6,4 +7,5 @@ export interface UserBook {
     user_id: number;
     book_id: number;
     status: BookStatus;
+    rating: number | null;
 }
