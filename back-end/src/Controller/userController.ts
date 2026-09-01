@@ -14,8 +14,12 @@ export async function GetUsers(req: Request, res: Response) {
 export async function GetUserById(req: Request, res: Response) {
     const id = +req.params.id
     const user = await db<User>("user")
-        .where({ id })
-        .select("id", "username", "email", "CPF", "theme_status")
+        .leftJoin("user_page", "user_page.user_id", "user.id")
+        .where({ "user.id": id })
+        .select(
+            "user.id", "user.username", "user.email", "user.CPF", "user.theme_status",
+            "user_page.description", "user_page.photo_url"
+        )
         .first()
 
     if (!user) {

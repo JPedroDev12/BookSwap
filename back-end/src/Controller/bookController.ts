@@ -25,7 +25,24 @@ export async function GetBookById(req:AuthRequest, res:Response) {
         })
     }
 
-    return res.status(200).json({data: book}) // data é usado para melhor organização na hora de criar o front-end
+    // média das avaliações que os usuários deram a esse livro no perfil deles
+    const avaliacoes = await db("user_book")
+        .where({ book_id: id })
+        .whereNotNull("rating")
+        .avg({ media: "rating" })
+        .count({ total: "rating" })
+        .first()
+
+    const donoDoLivro = await db("user").where({ id: book.user_id }).select("id", "username").first()
+
+    return res.status(200).json({
+        data: {
+            ...book,
+            average_rating: avaliacoes?.media ? Number(avaliacoes.media) : null,
+            ratings_count: Number(avaliacoes?.total || 0),
+            owner: donoDoLivro || null,
+        }
+    }) // data é usado para melhor organização na hora de criar o front-end
 }
 
 export async function CreateBook(req: AuthRequest, res:Response) {
