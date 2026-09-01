@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   FaSearch,
@@ -11,6 +11,7 @@ import {
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { fetchAPI } from "../api";
+import { redimensionarImagem } from "../utils/imagem";
 
 const FORM_VAZIO = {
   title: "",
@@ -52,6 +53,7 @@ function Loja() {
   const [erroForm, setErroForm] = useState("");
 
   const [excluindoId, setExcluindoId] = useState(null);
+  const inputCapaRef = useRef(null);
 
   async function carregarLivros() {
     setCarregando(true);
@@ -116,6 +118,17 @@ function Loja() {
     setLivroEditando(null);
     setForm(FORM_VAZIO);
     setErroForm("");
+  }
+
+  async function handleCapaChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const dataUrl = await redimensionarImagem(file, 800, 0.82);
+      setForm((p) => ({ ...p, cover_url: dataUrl }));
+    } catch (err) {
+      setErroForm(err.message || "Não foi possível carregar a imagem selecionada.");
+    }
   }
 
   async function handleSalvar(e) {
@@ -255,7 +268,7 @@ function Loja() {
               const donoDoLivro = usuario && livro.user_id === usuario.id;
               return (
                 <div key={livro.id} className="flex flex-col gap-2 group">
-                  <div className="relative aspect-2/3 rounded-xl overflow-hidden bg-gray-200 shadow-sm">
+                  <Link to={`/livro/${livro.id}`} className="relative aspect-2/3 rounded-xl overflow-hidden bg-gray-200 shadow-sm block">
                     {livro.cover_url ? (
                       <img
                         src={livro.cover_url}
@@ -276,7 +289,10 @@ function Loja() {
                       <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           type="button"
-                          onClick={() => abrirModalEditar(livro)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            abrirModalEditar(livro);
+                          }}
                           title="Editar"
                           className="bg-white/90 hover:bg-white text-[#2A6183] p-1.5 rounded-full shadow cursor-pointer"
                         >
@@ -284,7 +300,10 @@ function Loja() {
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleExcluir(livro)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleExcluir(livro);
+                          }}
                           disabled={excluindoId === livro.id}
                           title="Excluir"
                           className="bg-white/90 hover:bg-white text-red-500 p-1.5 rounded-full shadow cursor-pointer disabled:opacity-50"
@@ -293,11 +312,11 @@ function Loja() {
                         </button>
                       </div>
                     )}
-                  </div>
+                  </Link>
 
-                  <span className="text-sm font-semibold truncate" title={livro.title}>
+                  <Link to={`/livro/${livro.id}`} className="text-sm font-semibold truncate hover:underline" title={livro.title}>
                     {livro.title}
-                  </span>
+                  </Link>
                   {livro.author && (
                     <span className="text-xs text-gray-500 truncate -mt-1.5">{livro.author}</span>
                   )}
@@ -404,13 +423,24 @@ function Loja() {
               </label>
 
               <label className="flex flex-col gap-1 text-sm text-gray-700">
-                URL da Capa
+                Capa
+                <button
+                  type="button"
+                  onClick={() => inputCapaRef.current.click()}
+                  className="relative w-74 h-28 rounded-xl overflow-hidden bg-gray-100 border border-gray-300 border-dashed flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors cursor-pointer md:w-55"
+                >
+                  {form.cover_url ? (
+                    <img src={form.cover_url} alt="Capa selecionada" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[10px] px-1 text-center">Escolher imagem</span>
+                  )}
+                </button>
                 <input
-                  type="text"
-                  value={form.cover_url}
-                  onChange={(e) => setForm((p) => ({ ...p, cover_url: e.target.value }))}
-                  placeholder="https://..."
-                  className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:border-[#4693DA]"
+                  type="file"
+                  accept="image/*"
+                  ref={inputCapaRef}
+                  className="hidden"
+                  onChange={handleCapaChange}
                 />
               </label>
 

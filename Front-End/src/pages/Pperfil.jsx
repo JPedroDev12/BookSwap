@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { FaEdit, FaSave, FaTimes, FaPlus, FaTrash, FaStar, FaRegStar, FaSearch } from "react-icons/fa";
 import { IoSwapHorizontalOutline, IoCloseOutline } from "react-icons/io5";
 import Header from "../components/Header";
 import { fetchAPI } from "../api";
+import { redimensionarImagem } from "../utils/imagem";
 
 // Precisa bater com o ENUM da coluna `status` de user_book no banco.
 const legendaCores = [
@@ -21,6 +22,18 @@ function Perfil() {
   const navigate = useNavigate();
   const { id } = useParams();
   const inputFotoRef = useRef(null);
+  const inputCapaRef = useRef(null);
+
+  // Id do usuário logado (não muda quando visitamos o perfil de outra
+  // pessoa) — usado só para decidir se este é "meu perfil" ou não.
+  const meuUsuarioId = useMemo(() => {
+    try {
+      const dados = JSON.parse(localStorage.getItem("user")) || {};
+      return dados.id;
+    } catch {
+      return undefined;
+    }
+  }, []);
 
   const [usuario, setUsuario] = useState(() => {
     const dadosUsuario = JSON.parse(localStorage.getItem("user")) || {};
@@ -38,8 +51,12 @@ function Perfil() {
   const [erro, setErro] = useState("");
   const [arquivoSelecionado, setArquivoSelecionado] = useState(null);
 
-  const ehMeuPerfil = !id || id === String(usuario.id);
-  const idPerfilVisitado = id || usuario.id;
+  // Importante: compara com o id de quem está logado, não com `usuario.id`
+  // — depois que o perfil de outra pessoa termina de carregar, `usuario`
+  // passa a representar os dados DELA, então comparar com `usuario.id`
+  // faria esta checagem virar `true` por engano e liberaria edição.
+  const ehMeuPerfil = !id || String(id) === String(meuUsuarioId);
+  const idPerfilVisitado = id || meuUsuarioId;
 
   useEffect(() => {
     async function carregarPerfil() {
@@ -56,10 +73,10 @@ function Perfil() {
       }
     }
 
-    if (id && id !== String(usuario.id)) {
+    if (id && id !== String(meuUsuarioId)) {
       carregarPerfil();
     }
-  }, [id, usuario.id]);
+  }, [id, meuUsuarioId]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -73,43 +90,19 @@ function Perfil() {
     }
   };
 
-  const handleMudarFoto = (e) => {
+  const handleMudarFoto = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setArquivoSelecionado(file);
     setErro("");
 
-    // Redimensiona/comprime a imagem antes de transformar em base64,
-    // pra não mandar pro banco uma foto de 3-5MB (o que trava o insert
-    // mesmo com a coluna já ajustada). Uma foto de perfil de até 512px
-    // de largura fica ótima e bem mais leve.
-    const img = new Image();
-    const urlTemporaria = URL.createObjectURL(file);
-
-    img.onload = () => {
-      const TAMANHO_MAX = 512;
-      const escala = Math.min(1, TAMANHO_MAX / Math.max(img.width, img.height));
-      const largura = Math.round(img.width * escala);
-      const altura = Math.round(img.height * escala);
-
-      const canvas = document.createElement("canvas");
-      canvas.width = largura;
-      canvas.height = altura;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, largura, altura);
-
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+    try {
+      const dataUrl = await redimensionarImagem(file, 512, 0.82);
       setFormTemp((prev) => ({ ...prev, fotoUrl: dataUrl }));
-      URL.revokeObjectURL(urlTemporaria);
-    };
-
-    img.onerror = () => {
-      setErro("Não foi possível carregar a imagem selecionada.");
-      URL.revokeObjectURL(urlTemporaria);
-    };
-
-    img.src = urlTemporaria;
+    } catch (err) {
+      setErro(err.message || "Não foi possível carregar a imagem selecionada.");
+    }
   };
 
   const handleEditarClick = async () => {
@@ -341,9 +334,6 @@ function Perfil() {
     }
   };
 
-  // ---------------------------------------------------------------------
-  // Modal "Adicionar livro"
-  // ---------------------------------------------------------------------
   const [modalAberto, setModalAberto] = useState(false);
   const [abaModal, setAbaModal] = useState("buscar"); // "buscar" | "novo"
   const [busca, setBusca] = useState("");
@@ -421,6 +411,17 @@ function Perfil() {
       setErroModal(err.message || "Não foi possível adicionar este livro.");
     } finally {
       setEnviandoLivro(false);
+    }
+  };
+
+  const handleCapaNovoLivro = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const dataUrl = await redimensionarImagem(file, 800, 0.82);
+      setNovoLivro((prev) => ({ ...prev, cover_url: dataUrl }));
+    } catch (err) {
+      setErroModal(err.message || "Não foi possível carregar a imagem selecionada.");
     }
   };
 
@@ -608,8 +609,9 @@ function Perfil() {
                 const emTroca = Boolean(trocasPorLivro[livro.id]);
                 return (
                   <div key={livro.user_book_id} className="flex flex-col gap-2 group">
-                    <div
-                      className="relative aspect-2/3 rounded-lg overflow-hidden shadow-lg group-hover:scale-[1.03] transition-transform"
+                    <Link
+                      to={`/livro/${livro.id}`}
+                      className="relative aspect-2/3 rounded-lg overflow-hidden shadow-lg group-hover:scale-[1.03] transition-transform block"
                       style={{ backgroundColor: corPorStatus(livro.status) }}
                     >
                       {livro.cover_url && (
@@ -620,7 +622,7 @@ function Perfil() {
                           onError={(e) => { e.currentTarget.style.display = "none"; }}
                         />
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
 
                       <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between">
                         <span
@@ -633,7 +635,10 @@ function Perfil() {
                         {ehMeuPerfil && (
                           <button
                             type="button"
-                            onClick={() => removerLivro(livro.user_book_id)}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              removerLivro(livro.user_book_id);
+                            }}
                             className="text-white/80 hover:text-red-400 bg-black/40 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                             title="Remover do perfil"
                           >
@@ -645,7 +650,7 @@ function Perfil() {
                       <span className="absolute bottom-2 left-2 right-2 text-white text-[11px] font-semibold leading-tight drop-shadow">
                         {livro.title}
                       </span>
-                    </div>
+                    </Link>
 
                     <span className="text-gray-300 text-xs truncate">{livro.author || "Autor desconhecido"}</span>
 
@@ -918,12 +923,24 @@ function Perfil() {
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-gray-300 text-xs">URL da capa</label>
+                    <label className="text-gray-300 text-xs">Capa</label>
+                    <button
+                      type="button"
+                      onClick={() => inputCapaRef.current.click()}
+                      className="relative w-35 h-22 rounded-lg overflow-hidden bg-white/10 border border-white/20 border-dashed flex items-center justify-center text-gray-300 hover:bg-white/15 transition-colors cursor-pointer md:w-55"
+                    >
+                      {novoLivro.cover_url ? (
+                        <img src={novoLivro.cover_url} alt="Capa selecionada" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-[10px] px-1 text-center">Escolher imagem</span>
+                      )}
+                    </button>
                     <input
-                      type="text"
-                      value={novoLivro.cover_url}
-                      onChange={(e) => setNovoLivro((prev) => ({ ...prev, cover_url: e.target.value }))}
-                      className="bg-white/10 text-white border border-white/20 rounded-lg px-3 py-2 text-sm"
+                      type="file"
+                      accept="image/*"
+                      ref={inputCapaRef}
+                      className="hidden"
+                      onChange={handleCapaNovoLivro}
                     />
                   </div>
                 </div>

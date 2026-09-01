@@ -10,6 +10,7 @@ import Perfil from "./pages/Pperfil"
 import Loja from "./pages/pLoja"
 import Swapping from "./pages/pSwapping"
 import Chat from "./pages/pChat"
+import Livro from "./pages/pLivro"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -36,6 +37,9 @@ createRoot(document.getElementById('root')).render(
         {/* Rota do Chat (conversar com quem deu match) */}
         <Route path="/chat" element={<Chat/>} />
         <Route path="/chat/:id" element={<Chat/>} />
+
+        {/* Rota da Página de Detalhes do Livro */}
+        <Route path="/livro/:id" element={<Livro/>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

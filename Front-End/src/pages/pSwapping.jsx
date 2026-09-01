@@ -219,7 +219,14 @@ function Swapping() {
                       </p>
                     )}
                     <p className="text-xs text-gray-300 mt-2">
-                      Ofertado por <span className="font-semibold">{cartaAtual.username}</span>
+                      Ofertado por{" "}
+                      <Link
+                        to={`/pPerfil/${cartaAtual.owner_id}`}
+                        className="font-semibold hover:underline"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {cartaAtual.username}
+                      </Link>
                       {Number(cartaAtual.price) > 0 && (
                         <> · R$ {formatarPreco(cartaAtual.price)}</>
                       )}

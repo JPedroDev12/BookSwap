@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { IoSend, IoSearch, IoArrowBack } from "react-icons/io5";
 import Header from "../components/Header";
 import { fetchAPI, socket } from "../api";
@@ -213,18 +213,24 @@ function Chat() {
                 >
                   <IoArrowBack className="text-xl" />
                 </button>
-                {contatoAtivo.other_photo_url ? (
-                  <img
-                    src={contatoAtivo.other_photo_url}
-                    alt={contatoAtivo.other_username}
-                    className="w-9 h-9 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-9 h-9 rounded-full bg-[#2A6183] text-white flex items-center justify-center font-bold text-sm">
-                    {iniciais(contatoAtivo.other_username)}
-                  </div>
-                )}
-                <p className="font-semibold text-[#1F4959]">{contatoAtivo.other_username}</p>
+                <Link
+                  to={`/pPerfil/${contatoAtivo.other_user_id}`}
+                  className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                  title="Ver perfil"
+                >
+                  {contatoAtivo.other_photo_url ? (
+                    <img
+                      src={contatoAtivo.other_photo_url}
+                      alt={contatoAtivo.other_username}
+                      className="w-9 h-9 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-[#2A6183] text-white flex items-center justify-center font-bold text-sm">
+                      {iniciais(contatoAtivo.other_username)}
+                    </div>
+                  )}
+                  <p className="font-semibold text-[#1F4959]">{contatoAtivo.other_username}</p>
+                </Link>
               </div>
 
               {erro && (
