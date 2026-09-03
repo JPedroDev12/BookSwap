@@ -26,6 +26,7 @@ CREATE TABLE book (
     user_id INT NOT NULL,
     title VARCHAR (200) NOT NULL,
     author VARCHAR (100),
+    publisher VARCHAR (150),
     isbn VARCHAR (13) UNIQUE,
     cover_url MEDIUMTEXT,
     description TEXT,
@@ -136,3 +137,7 @@ VALUES ('admin', 'admin@bookswap.com', '$2b$10$wAeP6JQwM/gkGTtti.LTU.sqA.HK5Ex/Q
 -- em vez de só um link — precisa do mesmo tipo de coluna grande.
 ALTER TABLE book
   MODIFY COLUMN cover_url MEDIUMTEXT;
+
+-- Editora do livro (opcional).
+ALTER TABLE book
+  ADD COLUMN publisher VARCHAR(150) AFTER author;

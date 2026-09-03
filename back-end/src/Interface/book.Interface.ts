@@ -3,6 +3,7 @@ export interface Book {
     user_id: number;
     title: string;
     author: string;
+    publisher: string;
     isbn: number;
     cover_url: string;
     description: string;

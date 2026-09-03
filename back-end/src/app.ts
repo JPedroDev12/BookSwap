@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import http from "http";
@@ -15,6 +16,7 @@ import userRoutes from "./Routes/userRoutes"
 import authRoutes from "./Routes/authRoutes"
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -58,6 +60,6 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 initSocket(io); // inicializa o socket
 
-server.listen(3000, () => {
-  console.log("Servidor aberto porta 3000");
+server.listen(PORT, () => {
+  console.log(`Servidor aberto porta ${PORT}`);
 });
