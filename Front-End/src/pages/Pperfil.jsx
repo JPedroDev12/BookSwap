@@ -334,6 +334,9 @@ function Perfil() {
     }
   };
 
+  // ---------------------------------------------------------------------
+  // Modal "Adicionar livro"
+  // ---------------------------------------------------------------------
   const [modalAberto, setModalAberto] = useState(false);
   const [abaModal, setAbaModal] = useState("buscar"); // "buscar" | "novo"
   const [busca, setBusca] = useState("");
@@ -345,6 +348,7 @@ function Perfil() {
   const [novoLivro, setNovoLivro] = useState({
     title: "",
     author: "",
+    publisher: "",
     genre: "",
     cover_url: "",
     year_published: "",
@@ -373,7 +377,7 @@ function Perfil() {
 
   const fecharModal = () => {
     setModalAberto(false);
-    setNovoLivro({ title: "", author: "", genre: "", cover_url: "", year_published: "", description: "" });
+    setNovoLivro({ title: "", author: "", publisher: "", genre: "", cover_url: "", year_published: "", description: "" });
   };
 
   const idsJaAdicionados = useMemo(() => new Set(livros.map((l) => l.id)), [livros]);
@@ -440,6 +444,7 @@ function Perfil() {
         body: JSON.stringify({
           title: novoLivro.title,
           author: novoLivro.author || null,
+          publisher: novoLivro.publisher || null,
           genre: novoLivro.genre || null,
           cover_url: novoLivro.cover_url || null,
           description: novoLivro.description || null,
@@ -622,7 +627,7 @@ function Perfil() {
                           onError={(e) => { e.currentTarget.style.display = "none"; }}
                         />
                       )}
-                      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
                       <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between">
                         <span
@@ -923,11 +928,21 @@ function Perfil() {
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-gray-300 text-xs">Capa</label>
-                    <button
-                      type="button"
-                      onClick={() => inputCapaRef.current.click()}
-                      className="relative w-35 h-22 rounded-lg overflow-hidden bg-white/10 border border-white/20 border-dashed flex items-center justify-center text-gray-300 hover:bg-white/15 transition-colors cursor-pointer md:w-55"
+                    <label className="text-gray-300 text-xs">Editora <span className="text-gray-400">(opcional)</span></label>
+                    <input
+                      type="text"
+                      value={novoLivro.publisher}
+                      onChange={(e) => setNovoLivro((prev) => ({ ...prev, publisher: e.target.value }))}
+                      className="bg-white/10 text-white border border-white/20 rounded-lg px-3 py-2 text-sm"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-gray-300 text-xs">Capa</label>
+                  <button
+                    type="button"
+                    onClick={() => inputCapaRef.current.click()}
+                    className="relative w-16 h-22 rounded-lg overflow-hidden bg-white/10 border border-white/20 border-dashed flex items-center justify-center text-gray-300 hover:bg-white/15 transition-colors cursor-pointer"
                     >
                       {novoLivro.cover_url ? (
                         <img src={novoLivro.cover_url} alt="Capa selecionada" className="w-full h-full object-cover" />
@@ -942,7 +957,6 @@ function Perfil() {
                       className="hidden"
                       onChange={handleCapaNovoLivro}
                     />
-                  </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-gray-300 text-xs">Descrição</label>
