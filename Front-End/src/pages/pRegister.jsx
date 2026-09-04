@@ -4,6 +4,7 @@ import { FaGoogle, FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import Header from "../components/Header";
 import MedidorForcaSenha from "../components/MedidorForcaSenha";
+import MedidorSenhasIguais from "../components/MedidorSenhasIguais";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchAPI } from "../api";
 import { avaliarForcaSenha } from "../utils/senha";
@@ -115,7 +116,10 @@ function Register() {
                   onChange={(e) => setConfirmarSenha(e.target.value)}
                   className="placeholder-gray-500 bg-[#1F263F] p-2 focus:outline-none rounded-[10px] text-gray-300"
                 />
-                <Link to="/pLogin" className="text-gray-200 text-[10px] hover:underline">Já tem uma conta? Entre aqui!</Link>
+                {confirmarSenha && (
+                  <MedidorSenhasIguais senha={password} confirmacao={confirmarSenha} />
+                )}
+                <Link to="/pLogin" className="text-gray-200 text-[10px] hover:underline mt-1">Já tem uma conta? Entre aqui!</Link>
               </div>
 
 
