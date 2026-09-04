@@ -37,9 +37,6 @@ app.use("/userPage", userPageRoutes)
 app.use("/users", userRoutes)
 app.use("/auth", authRoutes)
 
-// Handler de erro global: garante que qualquer erro (inclusive os que
-// "escapam" de um async/await sem try/catch) volte como JSON com uma
-// mensagem legível, em vez de um 500 em branco/HTML difícil de depurar.
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error("Erro não tratado:", err);
 
@@ -55,6 +52,10 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
   return res.status(500).json({
     Error: "Erro interno no servidor. Tente novamente em instantes.",
+    // Detalhe técnico do erro, útil pra depurar durante o desenvolvimento
+    // (não expõe senha nem dados sensíveis, só a mensagem/código do erro).
+    Detalhe: err?.sqlMessage || err?.message || null,
+    Codigo: err?.code || null,
   });
 });
 

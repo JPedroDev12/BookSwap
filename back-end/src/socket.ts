@@ -59,9 +59,6 @@ export function initSocket(io: Server) {
             // envia a mensagem para TODOS da sala (inclusive quem enviou)
             io.to(`chat_${data.chat_id}`).emit("receivedMessage", newMessage);
 
-            // io.to = envia para todos dentro da sala
-            // receivedMessage = evento que o frontend escuta
-            // newMessage = dados enviados
         });
 
         socket.on("disconnect", () => {
