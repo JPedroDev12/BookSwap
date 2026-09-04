@@ -100,7 +100,7 @@ function Register() {
                   placeholder="••••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="placeholder-gray-500 bg-[#1F263F] p-2 focus:outline-none rounded-[10px] text-gray-300"
+                  className="placeholder-gray-500 bg-[#1F263F] items-center p-2 focus:outline-none rounded-[10px] text-gray-300"
                 />
                 <MedidorForcaSenha senha={password} />
               </div>

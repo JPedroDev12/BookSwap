@@ -19,7 +19,7 @@ function MedidorForcaSenha({ senha }) {
       </div>
       <span className={`text-xs font-semibold ${estilo.texto}`}>{estilo.label}</span>
       {nivel !== "forte" && (
-        <span className="text-[11px] text-gray-400">
+        <span className="text-[11px] w-55 text-gray-400">
           Use pelo menos 8 caracteres, misturando maiúsculas, minúsculas, números e símbolos
           {!criterios.tamanhoMinimo ? " (faltam caracteres)" : ""}.
         </span>
