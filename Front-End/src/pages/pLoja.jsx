@@ -16,7 +16,6 @@ import { redimensionarImagem } from "../utils/imagem";
 const FORM_VAZIO = {
   title: "",
   author: "",
-  publisher: "",
   genre: "",
   isbn: "",
   year_published: "",
@@ -102,7 +101,6 @@ function Loja() {
     setForm({
       title: livro.title || "",
       author: livro.author || "",
-      publisher: livro.publisher || "",
       genre: livro.genre || "",
       isbn: livro.isbn || "",
       year_published: livro.year_published || "",
@@ -147,7 +145,6 @@ function Loja() {
       const body = {
         title: form.title.trim(),
         author: form.author.trim() || null,
-        publisher: form.publisher.trim() || null,
         genre: form.genre.trim() || null,
         isbn: form.isbn.trim() || null,
         year_published: form.year_published ? Number(form.year_published) : null,
@@ -384,16 +381,6 @@ function Loja() {
               </label>
 
               <label className="flex flex-col gap-1 text-sm text-gray-700">
-                Editora
-                <input
-                  type="text"
-                  value={form.publisher}
-                  onChange={(e) => setForm((p) => ({ ...p, publisher: e.target.value }))}
-                  className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:border-[#4693DA]"
-                />
-              </label>
-
-              <label className="flex flex-col gap-1 text-sm text-gray-700">
                 Gênero
                 <input
                   type="text"
@@ -440,7 +427,7 @@ function Loja() {
                 <button
                   type="button"
                   onClick={() => inputCapaRef.current.click()}
-                  className="relative w-20 h-28 rounded-xl overflow-hidden bg-gray-100 border border-gray-300 border-dashed flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors cursor-pointer"
+                  className="relative w-74 h-28 rounded-xl overflow-hidden bg-gray-100 border border-gray-300 border-dashed flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors cursor-pointer md:w-55"
                 >
                   {form.cover_url ? (
                     <img src={form.cover_url} alt="Capa selecionada" className="w-full h-full object-cover" />

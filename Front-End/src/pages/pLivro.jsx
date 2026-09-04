@@ -14,7 +14,6 @@ function formatarPreco(valor) {
 const FORM_VAZIO = {
   title: "",
   author: "",
-  publisher: "",
   genre: "",
   isbn: "",
   year_published: "",
@@ -68,7 +67,6 @@ function Livro() {
     setForm({
       title: livro.title || "",
       author: livro.author || "",
-      publisher: livro.publisher || "",
       genre: livro.genre || "",
       isbn: livro.isbn || "",
       year_published: livro.year_published || "",
@@ -100,7 +98,6 @@ function Livro() {
       const body = {
         title: form.title.trim(),
         author: form.author.trim() || null,
-        publisher: form.publisher.trim() || null,
         genre: form.genre.trim() || null,
         isbn: form.isbn.trim() || null,
         year_published: form.year_published ? Number(form.year_published) : null,
@@ -208,9 +205,9 @@ function Livro() {
           <div className="flex-1 flex flex-col gap-3 min-w-0">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-[#1F4959] leading-tight">{livro.title}</h1>
-              {(livro.author || livro.genre || livro.publisher) && (
+              {(livro.author || livro.genre) && (
                 <p className="text-sm text-gray-500 mt-1">
-                  {[livro.author, livro.publisher, livro.genre].filter(Boolean).join(" · ")}
+                  {[livro.author, livro.genre].filter(Boolean).join(" · ")}
                   {livro.year_published ? ` · ${livro.year_published}` : ""}
                 </p>
               )}
@@ -320,16 +317,6 @@ function Livro() {
                   type="text"
                   value={form.author}
                   onChange={(e) => setForm((p) => ({ ...p, author: e.target.value }))}
-                  className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:border-[#4693DA]"
-                />
-              </label>
-
-              <label className="flex flex-col gap-1 text-sm text-gray-700">
-                Editora <span className="text-gray-400 font-normal">(opcional)</span>
-                <input
-                  type="text"
-                  value={form.publisher}
-                  onChange={(e) => setForm((p) => ({ ...p, publisher: e.target.value }))}
                   className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:border-[#4693DA]"
                 />
               </label>

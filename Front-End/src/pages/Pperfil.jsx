@@ -334,9 +334,6 @@ function Perfil() {
     }
   };
 
-  // ---------------------------------------------------------------------
-  // Modal "Adicionar livro"
-  // ---------------------------------------------------------------------
   const [modalAberto, setModalAberto] = useState(false);
   const [abaModal, setAbaModal] = useState("buscar"); // "buscar" | "novo"
   const [busca, setBusca] = useState("");
@@ -348,7 +345,6 @@ function Perfil() {
   const [novoLivro, setNovoLivro] = useState({
     title: "",
     author: "",
-    publisher: "",
     genre: "",
     cover_url: "",
     year_published: "",
@@ -377,10 +373,46 @@ function Perfil() {
 
   const fecharModal = () => {
     setModalAberto(false);
-    setNovoLivro({ title: "", author: "", publisher: "", genre: "", cover_url: "", year_published: "", description: "" });
+    setNovoLivro({ title: "", author: "", genre: "", cover_url: "", year_published: "", description: "" });
   };
 
   const idsJaAdicionados = useMemo(() => new Set(livros.map((l) => l.id)), [livros]);
+
+  // Deleta o livro permanentemente do banco (não apenas do perfil).
+  // Só é permitido para livros criados pelo próprio usuário logado —
+  // o backend também valida isso (403 caso contrário), então o botão
+  // aqui é escondido/desabilitado apenas como reforço de UX.
+  const [deletandoLivroId, setDeletandoLivroId] = useState(null);
+
+  const deletarLivroPermanente = async (livroCatalogo) => {
+    if (meuUsuarioId === undefined || Number(livroCatalogo.user_id) !== Number(meuUsuarioId)) return;
+
+    const confirmado = window.confirm(
+      `Tem certeza que deseja excluir "${livroCatalogo.title}" permanentemente?\n\nEsta ação apaga o livro do banco de dados para todos os usuários e não pode ser desfeita.`
+    );
+    if (!confirmado) return;
+
+    setDeletandoLivroId(livroCatalogo.id);
+    setErroModal("");
+    try {
+      await fetchAPI(`/books/${livroCatalogo.id}`, { method: "DELETE" });
+
+      // Remove do catálogo do modal e, caso estivesse na própria estante,
+      // remove de lá também (o backend já apagou o vínculo user_book).
+      setCatalogo((prev) => prev.filter((b) => b.id !== livroCatalogo.id));
+      setLivros((prev) => prev.filter((l) => l.id !== livroCatalogo.id));
+      setTrocasPorLivro((prev) => {
+        const novo = { ...prev };
+        delete novo[livroCatalogo.id];
+        return novo;
+      });
+    } catch (err) {
+      console.error(err);
+      setErroModal(err.message || "Não foi possível excluir este livro.");
+    } finally {
+      setDeletandoLivroId(null);
+    }
+  };
 
   const catalogoFiltrado = useMemo(() => {
     const termo = busca.trim().toLowerCase();
@@ -444,7 +476,6 @@ function Perfil() {
         body: JSON.stringify({
           title: novoLivro.title,
           author: novoLivro.author || null,
-          publisher: novoLivro.publisher || null,
           genre: novoLivro.genre || null,
           cover_url: novoLivro.cover_url || null,
           description: novoLivro.description || null,
@@ -627,7 +658,7 @@ function Perfil() {
                           onError={(e) => { e.currentTarget.style.display = "none"; }}
                         />
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
 
                       <div className="absolute top-1.5 left-1.5 right-1.5 flex items-center justify-between">
                         <span
@@ -855,6 +886,9 @@ function Perfil() {
                   <div className="flex flex-col gap-2 max-h-64 overflow-y-auto pr-1">
                     {catalogoFiltrado.map((livro) => {
                       const jaAdicionado = idsJaAdicionados.has(livro.id);
+                      const souCriador =
+                        meuUsuarioId !== undefined && Number(livro.user_id) === Number(meuUsuarioId);
+                      const deletando = deletandoLivroId === livro.id;
                       return (
                         <div
                           key={livro.id}
@@ -871,9 +905,23 @@ function Perfil() {
                             <p className="text-white text-sm truncate">{livro.title}</p>
                             <p className="text-gray-400 text-xs truncate">{livro.author || "Autor desconhecido"}</p>
                           </div>
+
+                          {/* Deletar permanentemente: só aparece para quem criou o livro. */}
+                          {souCriador && (
+                            <button
+                              type="button"
+                              disabled={deletando || enviandoLivro}
+                              onClick={() => deletarLivroPermanente(livro)}
+                              title="Excluir livro permanentemente do banco de dados"
+                              className="shrink-0 text-xs p-2 rounded-lg text-red-400 border border-red-500/40 hover:bg-red-500/10 hover:text-red-300 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                              <FaTrash />
+                            </button>
+                          )}
+
                           <button
                             type="button"
-                            disabled={jaAdicionado || enviandoLivro}
+                            disabled={jaAdicionado || enviandoLivro || deletando}
                             onClick={() => adicionarLivroExistente(livro)}
                             className="shrink-0 text-xs px-3 py-1.5 rounded-lg bg-[#4693DA] text-white hover:bg-[#357ab8] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                           >
@@ -928,21 +976,11 @@ function Perfil() {
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-gray-300 text-xs">Editora <span className="text-gray-400">(opcional)</span></label>
-                    <input
-                      type="text"
-                      value={novoLivro.publisher}
-                      onChange={(e) => setNovoLivro((prev) => ({ ...prev, publisher: e.target.value }))}
-                      className="bg-white/10 text-white border border-white/20 rounded-lg px-3 py-2 text-sm"
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-gray-300 text-xs">Capa</label>
-                  <button
-                    type="button"
-                    onClick={() => inputCapaRef.current.click()}
-                    className="relative w-16 h-22 rounded-lg overflow-hidden bg-white/10 border border-white/20 border-dashed flex items-center justify-center text-gray-300 hover:bg-white/15 transition-colors cursor-pointer"
+                    <label className="text-gray-300 text-xs">Capa</label>
+                    <button
+                      type="button"
+                      onClick={() => inputCapaRef.current.click()}
+                      className="relative w-35 h-22 rounded-lg overflow-hidden bg-white/10 border border-white/20 border-dashed flex items-center justify-center text-gray-300 hover:bg-white/15 transition-colors cursor-pointer md:w-55"
                     >
                       {novoLivro.cover_url ? (
                         <img src={novoLivro.cover_url} alt="Capa selecionada" className="w-full h-full object-cover" />
@@ -957,6 +995,7 @@ function Perfil() {
                       className="hidden"
                       onChange={handleCapaNovoLivro}
                     />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-gray-300 text-xs">Descrição</label>

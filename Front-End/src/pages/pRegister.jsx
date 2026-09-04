@@ -3,8 +3,10 @@ import { useState } from "react";
 import { FaGoogle, FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import Header from "../components/Header";
+import MedidorForcaSenha from "../components/MedidorForcaSenha";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchAPI } from "../api";
+import { avaliarForcaSenha } from "../utils/senha";
 
 function Register() {
     const navigate = useNavigate();
@@ -26,6 +28,11 @@ function Register() {
 
       if (password !== confirmarSenha) {
         setErro("As senhas não coincidem.");
+        return;
+      }
+
+      if (avaliarForcaSenha(password).nivel !== "forte") {
+        setErro("Sua senha precisa ser forte: pelo menos 8 caracteres, com maiúsculas, minúsculas, números e símbolos.");
         return;
       }
 
@@ -95,6 +102,7 @@ function Register() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="placeholder-gray-500 bg-[#1F263F] p-2 focus:outline-none rounded-[10px] text-gray-300"
                 />
+                <MedidorForcaSenha senha={password} />
               </div>
 
 
@@ -107,6 +115,7 @@ function Register() {
                   onChange={(e) => setConfirmarSenha(e.target.value)}
                   className="placeholder-gray-500 bg-[#1F263F] p-2 focus:outline-none rounded-[10px] text-gray-300"
                 />
+                <Link to="/pLogin" className="text-gray-200 text-[10px] hover:underline">Já tem uma conta? Entre aqui!</Link>
               </div>
 
 
