@@ -27,7 +27,7 @@ CREATE TABLE book (
     title VARCHAR (200) NOT NULL,
     author VARCHAR (100),
     isbn VARCHAR (13) UNIQUE,
-    cover_url VARCHAR (300),
+    cover_url MEDIUMTEXT,
     description TEXT,
     genre VARCHAR (100),
     year_published INT,
@@ -131,3 +131,8 @@ ALTER TABLE user
 -- (troque a senha depois do primeiro login, ela já está com hash bcrypt aqui embaixo)
 INSERT INTO user (username, email, password, is_admin)
 VALUES ('admin', 'admin@bookswap.com', '$2b$10$wAeP6JQwM/gkGTtti.LTU.sqA.HK5Ex/QXAZ299JdI.ZqllXSYnHi', TRUE);
+
+-- Capa do livro agora é enviada como arquivo (base64), assim como a foto de perfil,
+-- em vez de só um link — precisa do mesmo tipo de coluna grande.
+ALTER TABLE book
+  MODIFY COLUMN cover_url MEDIUMTEXT;
