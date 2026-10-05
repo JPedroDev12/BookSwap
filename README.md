@@ -86,13 +86,16 @@ O site possui as seguintes telas principais:
 
 O projeto foi desenvolvido utilizando:
 
-* HTML
-* CSS
-* JavaScript
 * Node.js
+* TypeScript
 * Express
-* MySQL
-* Knex
+* MySQL (via Knex)
+* Socket.io
+* JWT
+* React
+* Vite
+* Tailwind CSS
+* React Router
 
 ---
 
