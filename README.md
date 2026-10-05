@@ -12,7 +12,7 @@ Além da troca, a plataforma também conta com **chat entre usuários, perfil pe
 
 ## 🔄 Sistema de Swapping (Estilo Tinder)
 
-A principal funcionalidade do site é o sistema de **swipe de livros**, inspirado em aplicativos de relacionamento.
+A principal funcionalidade do site é o sistema de **swap de livros**, inspirado em aplicativos de relacionamento.
 
 Funciona da seguinte forma:
 
@@ -67,17 +67,6 @@ Os livros podem ser organizados nas seguintes categorias:
 * ⏳ **Estou lendo**
 * ⭐ **Gostei**
 * ❌ **Não gostei**
-
----
-
-## 🌗 Tema Claro e Escuro
-
-O site possui suporte para dois temas:
-
-* ☀️ **Modo Claro**
-* 🌙 **Modo Escuro**
-
-Permitindo uma experiência melhor de leitura e navegação.
 
 ---
 
